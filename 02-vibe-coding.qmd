@@ -1,0 +1,230 @@
+---
+title: "Le Vibe Coding"
+---
+
+# Définition et pratiques du vibe coding
+
+En février 2025, Andrej Karpathy a introduit un terme qui a rapidement fait le tour de la communauté tech :
+
+> "There's a new kind of coding I call 'vibe coding', where you fully give in to the vibes, embrace exponentials, and forget that the code even exists."
+
+## Qu'est-ce que le vibe coding ?
+
+Le vibe coding, c'est programmer en s'appuyant entièrement sur les LLMs pour générer le code. Vous décrivez ce que vous voulez, l'IA produit le code, et vous acceptez le résultat sans nécessairement le lire en détail.
+
+### La description originale de Karpathy
+
+Voici comment il décrit sa propre pratique :
+
+- "I 'Accept All' always, I don't read the diffs anymore"
+- "When I get error messages I just copy paste them in with no comment, usually that fixes it"
+- "The code grows beyond my usual comprehension"
+- "Sometimes the LLMs can't fix a bug so I just work around it or ask for random changes until it goes away"
+
+::: {.callout-warning}
+## Attention au contexte
+
+Karpathy précise explicitement que cette approche est adaptée aux "throwaway weekend projects" — des projets personnels jetables. Ce n'est pas une recommandation pour le code de production.
+:::
+
+## Le spectre des pratiques
+
+Simon Willison apporte une nuance importante :
+
+> "If an LLM wrote the code for you, and you then reviewed it, tested it thoroughly and made sure you could explain how it works to someone else—that's not vibe coding, it's software development."
+
+### Vibe coding pur
+
+- Accept All sans lire
+- Copier-coller les erreurs sans commentaire
+- Le code devient une "boîte noire"
+- Objectif : que ça marche, peu importe comment
+
+### Développement assisté par IA
+
+- L'IA génère, l'humain révise
+- Tests systématiques
+- Compréhension du code généré
+- L'IA comme collaborateur, pas comme auteur unique
+
+## Quand vibe coder ?
+
+### Cas d'usage appropriés
+
+**Prototypes et POC :**
+```
+→ Explorer une idée rapidement
+→ Valider un concept
+→ Créer une démo
+```
+
+**Projets personnels :**
+```
+→ Scripts one-shot
+→ Automatisations domestiques
+→ Expérimentations
+```
+
+**Apprentissage :**
+```
+→ Découvrir un nouveau langage
+→ Comprendre une API
+→ Explorer des patterns
+```
+
+### Cas où la prudence s'impose
+
+**Production :**
+```
+⚠️ Revue obligatoire
+⚠️ Tests rigoureux
+⚠️ Compréhension du code
+```
+
+**Sécurité :**
+```
+⚠️ Jamais de vibe coding
+⚠️ Audit manuel
+⚠️ Expertise requise
+```
+
+**Code critique :**
+```
+⚠️ Transactions financières
+⚠️ Données médicales
+⚠️ Infrastructure
+```
+
+## Pratiques des experts
+
+### Simon Willison : le développeur prolixe
+
+Simon Willison est reconnu pour sa productivité exceptionnelle en utilisant les LLMs. Ses pratiques :
+
+1. **Itération rapide** : demander des plans avant l'implémentation
+2. **Contexte riche** : fournir beaucoup de contexte à l'IA
+3. **Tests comme garde-fous** : les tests validés par les humains vérifient le code IA
+4. **Documentation publique** : partager ses expériences ouvertement
+
+::: {.callout-tip}
+## La méthode Simon Willison
+
+Pour les changements importants, demandez d'abord un plan à l'IA. Itérez sur le plan jusqu'à ce qu'il soit satisfaisant. Puis demandez l'implémentation étape par étape. Parfois, abandonnez le plan si le changement n'est pas utile.
+:::
+
+### Andrej Karpathy : l'expérimentateur
+
+Karpathy a utilisé le vibe coding pour créer des apps iOS sans connaître Swift :
+
+1. **Objectifs clairs** : savoir ce qu'on veut construire
+2. **Feedback rapide** : tester immédiatement
+3. **Acceptation des limitations** : parfois contourner plutôt que résoudre
+4. **Projets jetables** : ne pas s'attacher au code
+
+## Les outils du vibe coder
+
+### Agents de code
+
+| Outil | Description |
+|-------|-------------|
+| **Claude Code** | Agent CLI d'Anthropic, excellent pour les projets complexes |
+| **Cursor** | IDE avec IA intégrée, populaire pour le vibe coding |
+| **GitHub Copilot** | Complétion et chat dans VS Code |
+| **Aider** | Agent open source en ligne de commande |
+| **Windsurf** | Alternative à Cursor par Codeium |
+
+### Mode d'interaction
+
+**Chat conversationnel :**
+```
+"Crée une fonction qui valide les emails"
+→ L'IA génère
+→ Vous évaluez
+```
+
+**Composer/Agent :**
+```
+"Refactorise tout le module d'authentification
+pour utiliser OAuth2"
+→ L'IA planifie et exécute
+→ Vous supervisez
+```
+
+**Inline/Autocomplete :**
+```
+def calculate_tax(  # L'IA complète
+```
+
+## Les pièges à éviter
+
+### 1. La dette technique invisible
+
+Le code généré peut fonctionner tout en étant mal structuré. Sans revue, la dette s'accumule silencieusement.
+
+```python
+# L'IA génère souvent du code qui "marche" mais...
+def process_data(data):
+    # 200 lignes de code spaghetti
+    # Pas de gestion d'erreur
+    # Variables mal nommées
+    # Mais... ça marche !
+    pass
+```
+
+### 2. Les failles de sécurité
+
+Les LLMs reproduisent parfois des anti-patterns de sécurité vus dans leurs données d'entraînement.
+
+```python
+# L'IA peut générer ça sans sourciller
+query = f"SELECT * FROM users WHERE id = {user_input}"  # SQL Injection !
+```
+
+### 3. Les hallucinations
+
+Les LLMs peuvent inventer des APIs ou des fonctions qui n'existent pas.
+
+```python
+# L'IA peut suggérer
+import fictional_library  # N'existe pas !
+fictional_library.do_magic()
+```
+
+### 4. La perte de compréhension
+
+Si vous ne lisez jamais le code, vous ne pouvez pas le maintenir ni le déboguer.
+
+## Git comme filet de sécurité
+
+Dans un workflow de vibe coding, Git devient votre meilleur ami :
+
+```bash
+# Avant une session de vibe coding
+git checkout -b experiment/vibe-auth-refactor
+
+# Commits fréquents pour pouvoir revenir en arrière
+git add -A && git commit -m "WIP: vibe coding session"
+
+# Si tout part en vrille
+git checkout main
+git branch -D experiment/vibe-auth-refactor
+```
+
+::: {.callout-tip}
+## Règle d'or
+
+**Jamais de vibe coding sur `main`.** Toujours sur une branche. Git vous permet d'expérimenter sans risque.
+:::
+
+## Construire sa propre pratique
+
+Il n'y a pas de "bonne" façon de faire. Voici des questions pour définir votre approche :
+
+1. **Quel est l'enjeu ?** Projet perso vs production
+2. **Quelle est votre expertise ?** Pouvez-vous détecter les erreurs ?
+3. **Quels sont vos garde-fous ?** Tests, CI, revue par pairs
+4. **Quelle est votre tolérance au risque ?** Bugs acceptables vs critiques
+
+---
+
+Maintenant que vous comprenez le paysage, passons à la pratique : [installation et configuration](03-installation.qmd).

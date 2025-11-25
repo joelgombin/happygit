@@ -1,0 +1,315 @@
+---
+title: "Configuration GitHub"
+---
+
+# Authentification et connexion à GitHub
+
+Pour que Git et vos agents de code puissent interagir avec GitHub, vous devez configurer l'authentification. Ce chapitre vous guide à travers les options.
+
+## Les méthodes d'authentification
+
+| Méthode | Sécurité | Facilité | Recommandation |
+|---------|----------|----------|----------------|
+| SSH Keys | ⭐⭐⭐ | ⭐⭐ | Production/quotidien |
+| Personal Access Token | ⭐⭐ | ⭐⭐⭐ | Scripts/CI |
+| GitHub CLI (gh) | ⭐⭐⭐ | ⭐⭐⭐ | Tout usage |
+
+## Méthode 1 : Clés SSH (recommandée)
+
+### Générer une clé SSH
+
+```bash
+# Générer une nouvelle clé ED25519 (recommandé)
+ssh-keygen -t ed25519 -C "votre.email@example.com"
+
+# Si votre système ne supporte pas ED25519
+ssh-keygen -t rsa -b 4096 -C "votre.email@example.com"
+```
+
+Lors de la génération :
+- **Emplacement** : acceptez le défaut (`~/.ssh/id_ed25519`)
+- **Passphrase** : entrez un mot de passe fort (recommandé) ou laissez vide
+
+### Ajouter la clé à l'agent SSH
+
+**macOS :**
+```bash
+# Démarrer l'agent
+eval "$(ssh-agent -s)"
+
+# Ajouter la clé (avec stockage dans le trousseau)
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+```
+
+**Linux :**
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+**Windows (Git Bash) :**
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+### Ajouter la clé publique à GitHub
+
+1. Copiez votre clé publique :
+```bash
+# macOS
+cat ~/.ssh/id_ed25519.pub | pbcopy
+
+# Linux (avec xclip)
+cat ~/.ssh/id_ed25519.pub | xclip -selection clipboard
+
+# Windows (Git Bash)
+cat ~/.ssh/id_ed25519.pub | clip
+```
+
+2. Allez sur GitHub → Settings → SSH and GPG keys → New SSH key
+3. Donnez un titre descriptif (ex: "MacBook Pro 2024")
+4. Collez la clé publique
+5. Cliquez "Add SSH key"
+
+### Tester la connexion
+
+```bash
+ssh -T git@github.com
+```
+
+Réponse attendue :
+```
+Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+::: {.callout-tip}
+## Première connexion
+
+La première fois, vous verrez un avertissement sur l'authenticité du host. Tapez "yes" pour continuer et ajouter GitHub à vos hosts connus.
+:::
+
+## Méthode 2 : GitHub CLI
+
+GitHub CLI (`gh`) simplifie énormément l'authentification et les interactions avec GitHub.
+
+### Installation
+
+**macOS :**
+```bash
+brew install gh
+```
+
+**Windows :**
+```bash
+winget install GitHub.cli
+```
+
+**Linux (Debian/Ubuntu) :**
+```bash
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+```
+
+### Authentification
+
+```bash
+gh auth login
+```
+
+Suivez les prompts :
+1. Choisissez "GitHub.com"
+2. Choisissez "HTTPS" ou "SSH" selon votre préférence
+3. Authentifiez via le navigateur
+
+### Vérification
+
+```bash
+gh auth status
+```
+
+### Commandes utiles
+
+```bash
+# Cloner un repo
+gh repo clone owner/repo
+
+# Créer un repo
+gh repo create my-project --private
+
+# Voir vos repos
+gh repo list
+
+# Créer une issue
+gh issue create
+
+# Créer une PR
+gh pr create
+
+# Voir le statut des checks
+gh pr checks
+```
+
+## Méthode 3 : Personal Access Token (PAT)
+
+Pour les scripts et la CI, les PAT sont souvent nécessaires.
+
+### Créer un PAT
+
+1. GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. "Generate new token (classic)"
+3. Donnez un nom descriptif
+4. Sélectionnez les scopes nécessaires :
+   - `repo` : accès complet aux repos
+   - `workflow` : pour GitHub Actions
+   - `read:org` : si vous travaillez avec des organisations
+5. Copiez le token immédiatement (il ne sera plus visible)
+
+::: {.callout-warning}
+## Sécurité des tokens
+
+- Ne commitez **jamais** un token dans votre code
+- Utilisez des variables d'environnement
+- Définissez une date d'expiration
+- Utilisez les scopes minimums nécessaires
+:::
+
+### Utiliser un PAT
+
+```bash
+# Stocker dans le credential helper
+git config --global credential.helper store
+# Puis lors du premier push, entrez le token comme mot de passe
+
+# Ou via variable d'environnement (pour scripts)
+export GITHUB_TOKEN="ghp_xxxxxxxxxxxx"
+```
+
+## Configuration pour les agents de code
+
+### Claude Code
+
+Claude Code utilise généralement l'authentification existante de Git :
+
+```bash
+# S'assurer que SSH est configuré
+ssh -T git@github.com
+
+# Ou utiliser gh pour l'auth
+gh auth login
+
+# Claude Code utilisera automatiquement ces credentials
+```
+
+### Cursor et VS Code
+
+Ces éditeurs peuvent utiliser l'authentification GitHub intégrée :
+
+1. Ouvrez la palette de commandes (Cmd/Ctrl + Shift + P)
+2. Cherchez "GitHub: Sign in"
+3. Suivez le flux d'authentification dans le navigateur
+
+## Gérer plusieurs comptes GitHub
+
+Si vous avez des comptes perso et pro séparés :
+
+### Option 1 : SSH avec hosts différents
+
+Créez `~/.ssh/config` :
+
+```
+# Compte personnel
+Host github.com-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_personal
+
+# Compte professionnel
+Host github.com-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_work
+```
+
+Puis clonez avec le bon host :
+```bash
+# Perso
+git clone git@github.com-personal:username/repo.git
+
+# Pro
+git clone git@github.com-work:company/repo.git
+```
+
+### Option 2 : Gitconfig conditionnel
+
+Dans `~/.gitconfig` :
+
+```ini
+[user]
+    name = Nom Personnel
+    email = perso@email.com
+
+[includeIf "gitdir:~/code/work/"]
+    path = ~/.gitconfig-work
+```
+
+Dans `~/.gitconfig-work` :
+
+```ini
+[user]
+    name = Nom Pro
+    email = pro@company.com
+```
+
+## Vérifier votre configuration
+
+```bash
+# Test SSH
+ssh -T git@github.com
+
+# Test gh
+gh auth status
+
+# Voir la config Git
+git config --list
+
+# Tester un clone
+git clone git@github.com:octocat/Hello-World.git /tmp/test-clone
+rm -rf /tmp/test-clone
+```
+
+## Dépannage courant
+
+### "Permission denied (publickey)"
+
+```bash
+# Vérifier que l'agent SSH tourne
+eval "$(ssh-agent -s)"
+
+# Vérifier que la clé est chargée
+ssh-add -l
+
+# Si vide, ajouter la clé
+ssh-add ~/.ssh/id_ed25519
+```
+
+### "Repository not found"
+
+- Vérifiez que vous avez accès au repo
+- Vérifiez l'URL (SSH vs HTTPS)
+- Vérifiez que vous êtes authentifié avec le bon compte
+
+### Token expiré
+
+```bash
+# Avec gh
+gh auth refresh
+
+# Avec PAT : créez un nouveau token sur GitHub
+```
+
+---
+
+Votre authentification est configurée ! Passons aux [fondamentaux de Git](05-git-fondamentaux.qmd).

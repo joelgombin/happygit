@@ -1,0 +1,56 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Happy Git for Vibe Coders"
+  subtitle: "Git & GitHub à l'ère des agents IA"
+  author: "La communauté des vibe coders"
+  date: "2025"
+
+  chapters:
+    - index.qmd
+    - part: "Comprendre la révolution"
+      chapters:
+        - 01-software-3.qmd
+        - 02-vibe-coding.qmd
+    - part: "Se préparer"
+      chapters:
+        - 03-installation.qmd
+        - 04-configuration-github.qmd
+    - part: "Git pour vibe coders"
+      chapters:
+        - 05-git-fondamentaux.qmd
+        - 06-branches-workflow.qmd
+        - 07-agents-et-git.qmd
+    - part: "Automatisation"
+      chapters:
+        - 08-github-actions.qmd
+        - 09-ci-cd-agents.qmd
+    - part: "Bonnes pratiques"
+      chapters:
+        - 10-securite.qmd
+        - 11-code-review.qmd
+        - 12-troubleshooting.qmd
+    - references.qmd
+
+  page-navigation: true
+  search: true
+  repo-url: https://github.com/joelgombin/happygit
+  repo-actions: [edit, issue]
+
+  sidebar:
+    style: docked
+    background: light
+
+format:
+  html:
+    theme:
+      light: [cosmo, custom.scss]
+    code-copy: true
+    code-overflow: wrap
+    toc: true
+    toc-depth: 3
+
+execute:
+  freeze: auto

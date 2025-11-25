@@ -1,0 +1,423 @@
+---
+title: "Sécurité"
+---
+
+# Sécurité et Git avec les agents IA
+
+Le vibe coding introduit de nouveaux risques de sécurité. Ce chapitre vous aide à coder en toute sécurité.
+
+## Les risques spécifiques au vibe coding
+
+### 1. Secrets hardcodés
+
+Les LLMs peuvent générer du code avec des valeurs en dur :
+
+```python
+# L'IA peut générer ça innocemment
+api_key = "sk-1234567890abcdef"  # ❌ DANGER
+database_url = "postgres://user:password@localhost/db"  # ❌ DANGER
+```
+
+### 2. Patterns de sécurité obsolètes
+
+Les LLMs sont entraînés sur du code historique, incluant des vulnérabilités :
+
+```python
+# Injection SQL (vulnérable)
+query = f"SELECT * FROM users WHERE id = {user_id}"  # ❌
+
+# Devrait être :
+cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))  # ✅
+```
+
+### 3. Dépendances malveillantes
+
+Un agent peut suggérer des packages :
+- Avec des vulnérabilités connues
+- Abandonnés depuis longtemps
+- Avec des noms similaires à des packages légitimes (typosquatting)
+
+### 4. Exposition de données sensibles
+
+Le code généré peut logger ou exposer des données sensibles :
+
+```python
+# L'IA peut générer
+print(f"User logged in: {user.email}, password: {user.password}")  # ❌
+```
+
+## Protéger les secrets
+
+### Règle d'or : jamais dans le code
+
+```bash
+# ❌ NE JAMAIS FAIRE
+API_KEY = "my-secret-key"
+
+# ✅ TOUJOURS FAIRE
+API_KEY = os.environ.get("API_KEY")
+```
+
+### Variables d'environnement
+
+**Fichier `.env` (local uniquement) :**
+```bash
+# .env - NE JAMAIS COMMITER
+DATABASE_URL=postgres://user:pass@localhost/db
+API_KEY=sk-1234567890
+SECRET_KEY=my-super-secret
+```
+
+**`.gitignore` :**
+```gitignore
+# Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets.json
+config.local.json
+```
+
+**Chargement :**
+```python
+# Python avec python-dotenv
+from dotenv import load_dotenv
+load_dotenv()
+
+api_key = os.environ.get("API_KEY")
+```
+
+```javascript
+// Node.js avec dotenv
+require('dotenv').config()
+const apiKey = process.env.API_KEY
+```
+
+### Secrets GitHub
+
+Pour la CI/CD, utilisez les secrets GitHub :
+
+1. Repository → Settings → Secrets and variables → Actions
+2. "New repository secret"
+3. Utilisez dans les workflows :
+
+```yaml
+env:
+  API_KEY: ${{ secrets.API_KEY }}
+```
+
+## Scan automatique des secrets
+
+### Pre-commit hook
+
+Installez un hook qui bloque les commits contenant des secrets :
+
+```bash
+# Installer pre-commit
+pip install pre-commit
+
+# Créer .pre-commit-config.yaml
+```
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: detect-private-key
+      - id: detect-aws-credentials
+```
+
+```bash
+# Installer les hooks
+pre-commit install
+```
+
+### GitHub Action
+
+```yaml
+# .github/workflows/secrets-scan.yml
+name: Secrets Scan
+
+on: [push, pull_request]
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Configuration Gitleaks
+
+```toml
+# .gitleaks.toml
+[allowlist]
+description = "Allowlist for project"
+
+# Ignorer certains fichiers
+paths = [
+  '''.gitleaks.toml''',
+  '''tests/fixtures/''',
+]
+
+# Ignorer certains patterns
+regexes = [
+  '''EXAMPLE_API_KEY''',
+  '''test-.*-key''',
+]
+```
+
+## Si un secret est commité
+
+### Étapes de remédiation
+
+1. **Révoquez immédiatement le secret** sur le service concerné
+2. Générez un nouveau secret
+3. Nettoyez l'historique Git (optionnel mais recommandé)
+
+### Nettoyer l'historique
+
+::: {.callout-warning}
+## Attention
+
+Cette opération réécrit l'historique. Coordonnez avec votre équipe.
+:::
+
+**Option 1 : BFG Repo-Cleaner (recommandé)**
+
+```bash
+# Installer BFG
+brew install bfg  # ou télécharger depuis https://rtyley.github.io/bfg-repo-cleaner/
+
+# Supprimer le fichier de tout l'historique
+bfg --delete-files secrets.json
+
+# Supprimer les strings sensibles
+echo "my-api-key-value" > passwords.txt
+bfg --replace-text passwords.txt
+
+# Nettoyer
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+
+# Force push (dangereux sur des branches partagées)
+git push --force
+```
+
+**Option 2 : git filter-branch**
+
+```bash
+git filter-branch --force --index-filter \
+  'git rm --cached --ignore-unmatch path/to/secret-file' \
+  --prune-empty --tag-name-filter cat -- --all
+
+git push --force --all
+```
+
+## Sécurité des dépendances
+
+### Audit régulier
+
+```bash
+# Node.js
+npm audit
+npm audit fix
+
+# Python
+pip-audit
+safety check
+
+# Ruby
+bundle audit
+```
+
+### Dependabot
+
+Activez Dependabot sur GitHub :
+
+```yaml
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+### Lockfiles
+
+Commitez toujours vos lockfiles :
+
+```gitignore
+# NE PAS ignorer
+# package-lock.json
+# yarn.lock
+# poetry.lock
+# Pipfile.lock
+```
+
+## Patterns de code sécurisé
+
+### Validation des entrées
+
+```python
+# ❌ L'IA peut générer
+def get_user(user_id):
+    return db.query(f"SELECT * FROM users WHERE id = {user_id}")
+
+# ✅ Demandez plutôt
+def get_user(user_id: int):
+    # Validation de type
+    if not isinstance(user_id, int):
+        raise ValueError("user_id must be an integer")
+    return db.query("SELECT * FROM users WHERE id = ?", (user_id,))
+```
+
+### Échappement des sorties
+
+```python
+# ❌ XSS potentiel
+html = f"<div>Welcome, {username}</div>"
+
+# ✅ Avec échappement
+from html import escape
+html = f"<div>Welcome, {escape(username)}</div>"
+```
+
+### Gestion des erreurs
+
+```python
+# ❌ Expose des détails sensibles
+except Exception as e:
+    return {"error": str(e), "stack": traceback.format_exc()}
+
+# ✅ Erreur générique pour l'utilisateur
+except Exception as e:
+    logger.error(f"Error: {e}", exc_info=True)  # Log détaillé
+    return {"error": "An internal error occurred"}  # Réponse générique
+```
+
+## Prompts sécurisés pour les agents
+
+Quand vous demandez du code à un agent, soyez explicite sur la sécurité :
+
+```
+"Génère une fonction d'authentification.
+Exigences de sécurité :
+- Hashage des mots de passe avec bcrypt
+- Protection contre le timing attack
+- Pas de secrets hardcodés
+- Validation des entrées
+- Messages d'erreur génériques (ne pas révéler si l'email existe)"
+```
+
+### Checklist pour les prompts
+
+- [ ] Précisez le contexte de sécurité (production/dev)
+- [ ] Mentionnez les réglementations applicables (GDPR, HIPAA, etc.)
+- [ ] Demandez explicitement la gestion des secrets via env vars
+- [ ] Spécifiez les validations d'entrée nécessaires
+- [ ] Indiquez le niveau de logging approprié
+
+## Revue de sécurité du code IA
+
+### Checklist de revue
+
+Avant de commiter du code généré par IA :
+
+- [ ] **Secrets** : Pas de clés/mots de passe hardcodés
+- [ ] **Injection** : Requêtes SQL paramétrées, pas d'eval()
+- [ ] **XSS** : Échappement des sorties HTML
+- [ ] **Auth** : Vérifications d'autorisation présentes
+- [ ] **Validation** : Entrées utilisateur validées
+- [ ] **Logging** : Pas de données sensibles dans les logs
+- [ ] **Dépendances** : Packages légitimes et à jour
+- [ ] **Crypto** : Pas de crypto "maison", utiliser les standards
+
+### Outils d'analyse statique
+
+```yaml
+# .github/workflows/security.yml
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Semgrep - analyse multi-langage
+      - uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+
+      # Pour Python
+      - run: pip install bandit && bandit -r src/
+
+      # Pour JavaScript
+      - run: npx eslint --plugin security src/
+```
+
+## Permissions et accès
+
+### Principe du moindre privilège
+
+Pour les GitHub Actions :
+
+```yaml
+permissions:
+  contents: read      # Lecture seule par défaut
+  pull-requests: write # Seulement si nécessaire
+
+jobs:
+  build:
+    permissions:
+      contents: read  # Override au niveau job
+```
+
+### Tokens à scope limité
+
+```bash
+# ❌ Token avec tous les droits
+GITHUB_TOKEN avec repo, admin:org, etc.
+
+# ✅ Token minimal
+GITHUB_TOKEN avec seulement:
+- repo:status
+- public_repo
+```
+
+## En cas d'incident
+
+1. **Contenez** : Révoquez les accès compromis
+2. **Évaluez** : Quel est l'impact ?
+3. **Remédiez** : Corrigez la vulnérabilité
+4. **Communiquez** : Informez les parties concernées
+5. **Apprenez** : Post-mortem et améliorations
+
+---
+
+Prochain chapitre : [Code Review](11-code-review.qmd).

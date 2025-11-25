@@ -1,0 +1,522 @@
+---
+title: "GitHub Actions"
+---
+
+# Automatiser avec GitHub Actions
+
+GitHub Actions est votre meilleur allié pour le vibe coding. L'automatisation vous offre un filet de sécurité quand le code est généré rapidement.
+
+## Pourquoi GitHub Actions pour le vibe coding ?
+
+1. **Validation automatique** : les tests tournent même si vous oubliez
+2. **Cohérence** : mêmes vérifications pour tout le code, humain ou IA
+3. **Documentation** : les workflows documentent vos standards
+4. **Collaboration** : tout le monde voit l'état du code
+
+## Concepts de base
+
+### Structure d'un workflow
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+```
+
+### Déclencheurs (triggers)
+
+```yaml
+on:
+  # À chaque push
+  push:
+    branches: [main, develop]
+
+  # À chaque PR
+  pull_request:
+    branches: [main]
+
+  # Planifié (cron)
+  schedule:
+    - cron: '0 2 * * *'  # Tous les jours à 2h
+
+  # Manuel
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'staging'
+```
+
+## Workflows essentiels
+
+### 1. CI basique (tests + lint)
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+```
+
+### 2. Vérification de sécurité
+
+```yaml
+# .github/workflows/security.yml
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 1'  # Chaque lundi
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm audit --audit-level=moderate
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+```
+
+### 3. Déploiement automatique
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+```
+
+## Patterns avancés
+
+### Matrix builds
+
+Tester sur plusieurs versions/OS :
+
+```yaml
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [18, 20, 22]
+        exclude:
+          - os: windows-latest
+            node: 18
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci
+      - run: npm test
+```
+
+### Caching pour la performance
+
+```yaml
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Cache node modules
+    uses: actions/cache@v4
+    with:
+      path: ~/.npm
+      key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      restore-keys: |
+        ${{ runner.os }}-node-
+
+  - run: npm ci
+```
+
+### Artifacts
+
+Sauvegarder et partager des fichiers entre jobs :
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: dist/
+
+      - run: echo "Deploying from dist/..."
+```
+
+## Le pattern de Simon Willison
+
+Simon Willison utilise des workflows GitHub Actions pour automatiser la recherche et la documentation. Voici son pattern :
+
+### Auto-update README
+
+```yaml
+# .github/workflows/update-readme.yml
+name: Update README with cogapp
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  models: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git log dates
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update README
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: cog -r -P README.md
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --staged --quiet || git commit -m "Auto-update README with cogapp [skip ci]"
+          git push
+```
+
+### Recherche asynchrone avec LLM
+
+Le pattern "async research" de Simon Willison :
+
+```yaml
+# .github/workflows/research.yml
+name: Async Research
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  research:
+    if: github.event.label.name == 'research'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install LLM
+        run: pip install llm llm-claude-3
+
+      - name: Run research
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          llm -m claude-3.5-sonnet "$ISSUE_BODY" > research_output.md
+
+      - name: Post results as comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('research_output.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+```
+
+## Workflows pour le vibe coding
+
+### Vérification post-agent
+
+Un workflow qui vérifie le code après qu'un agent a fait des changements :
+
+```yaml
+# .github/workflows/verify-ai-code.yml
+name: Verify AI-Generated Code
+
+on:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
+      - name: Check for large diffs
+        run: |
+          LINES=$(git diff --stat origin/main | tail -1 | awk '{print $4+$6}')
+          if [ "$LINES" -gt 1000 ]; then
+            echo "::warning::Large diff detected ($LINES lines changed). Consider reviewing carefully."
+          fi
+
+      - name: Check for new dependencies
+        run: |
+          if git diff origin/main -- package.json | grep -q '"dependencies"'; then
+            echo "::notice::New dependencies added. Review package.json changes."
+          fi
+```
+
+### PR automatique depuis une branche
+
+```yaml
+# .github/workflows/auto-pr.yml
+name: Auto PR
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'fix/**'
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}
+          base: main
+          title: "PR: ${{ github.ref_name }}"
+          body: |
+            Automated PR for branch `${{ github.ref_name }}`.
+
+            ## Checklist
+            - [ ] Code reviewed
+            - [ ] Tests pass
+            - [ ] Documentation updated
+          draft: true
+```
+
+## Secrets et variables
+
+### Configurer des secrets
+
+1. Repository → Settings → Secrets and variables → Actions
+2. "New repository secret"
+3. Nommez et entrez la valeur
+
+```yaml
+# Utilisation dans un workflow
+env:
+  API_KEY: ${{ secrets.API_KEY }}
+```
+
+### Variables d'environnement
+
+```yaml
+# Repository level
+env:
+  NODE_ENV: production
+
+# Job level
+jobs:
+  build:
+    env:
+      CI: true
+
+# Step level
+steps:
+  - run: echo $MY_VAR
+    env:
+      MY_VAR: value
+```
+
+## Debugging
+
+### Activer le debug logging
+
+```yaml
+# Dans le workflow
+env:
+  ACTIONS_STEP_DEBUG: true
+```
+
+### Logs manuels
+
+```yaml
+steps:
+  - run: |
+      echo "::debug::This is a debug message"
+      echo "::notice::This is a notice"
+      echo "::warning::This is a warning"
+      echo "::error::This is an error"
+```
+
+### SSH dans le runner (pour debug)
+
+```yaml
+steps:
+  - name: Setup tmate session
+    uses: mxschmitt/action-tmate@v3
+    if: ${{ failure() }}  # Seulement en cas d'échec
+```
+
+---
+
+Prochain chapitre : [CI/CD avec les agents](09-ci-cd-agents.qmd).

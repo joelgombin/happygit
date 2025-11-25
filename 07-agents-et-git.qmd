@@ -1,0 +1,359 @@
+---
+title: "Agents et Git"
+---
+
+# Travailler efficacement avec les agents de code
+
+Ce chapitre aborde les patterns spécifiques pour utiliser Git en combinaison avec des agents de code comme Claude Code, Cursor, ou GitHub Copilot.
+
+## Préparer son repo pour les agents
+
+### Structure de projet claire
+
+Les agents comprennent mieux un projet bien structuré :
+
+```
+my-project/
+├── README.md           # Essentiel ! L'agent le lit souvent
+├── src/
+│   ├── components/
+│   ├── services/
+│   └── utils/
+├── tests/
+├── docs/
+├── .gitignore
+├── package.json        # ou pyproject.toml, Cargo.toml...
+└── CONTRIBUTING.md     # Optionnel mais utile
+```
+
+### README comme contexte
+
+Votre README aide l'agent à comprendre le projet :
+
+```markdown
+# Mon Projet
+
+## Description
+Application web de gestion de tâches.
+
+## Stack technique
+- Frontend: React + TypeScript
+- Backend: Node.js + Express
+- Database: PostgreSQL
+
+## Structure
+- `src/components/` - Composants React
+- `src/api/` - Routes Express
+- `src/db/` - Modèles et migrations
+
+## Conventions
+- Nous utilisons ESLint + Prettier
+- Tests avec Jest
+- Commits conventionnels
+```
+
+### Fichiers de configuration pour l'agent
+
+Certains agents supportent des fichiers de configuration :
+
+**`.claude` (Claude Code) :**
+```yaml
+# Instructions pour Claude Code
+context:
+  - README.md
+  - docs/architecture.md
+
+rules:
+  - Utiliser TypeScript strict
+  - Tests obligatoires pour les nouvelles fonctions
+  - Pas de console.log en production
+```
+
+**`.cursorrules` (Cursor) :**
+```
+You are working on a React TypeScript project.
+Always use functional components with hooks.
+Prefer named exports over default exports.
+Write tests for new functionality.
+```
+
+## Workflows avec les agents
+
+### Pattern 1 : Le checkpoint fréquent
+
+Commitez après chaque interaction réussie avec l'agent :
+
+```bash
+# Demande à l'agent
+"Ajoute un formulaire de login"
+
+# L'agent fait ses changements
+# Vérifiez que ça marche
+
+git add .
+git commit -m "feat: add login form"
+
+# Prochaine demande
+"Ajoute la validation du formulaire"
+
+# Changements...
+git add .
+git commit -m "feat: add login form validation"
+```
+
+**Avantage** : rollback granulaire facile
+
+### Pattern 2 : Le WIP commit
+
+Pour les sessions de vibe coding intense :
+
+```bash
+# Début de session
+git checkout -b feature/big-refactor
+
+# Commits WIP réguliers
+git add . && git commit -m "WIP"
+git add . && git commit -m "WIP"
+git add . && git commit -m "WIP"
+
+# À la fin, squash en un seul commit propre
+git rebase -i HEAD~5
+# Marquer les WIP comme "squash"
+# Écrire un vrai message de commit
+```
+
+### Pattern 3 : La revue différée
+
+Laissez l'agent travailler, puis révisez en bloc :
+
+```bash
+# L'agent fait beaucoup de changements
+# ...
+
+# Revue avec git
+git diff                    # Voir tout
+git diff --stat             # Vue d'ensemble
+git diff src/auth/          # Fichier par fichier
+
+# Ajouter sélectivement
+git add -p                  # Mode interactif
+```
+
+## Demander du contexte Git à l'agent
+
+Les agents peuvent vous aider avec Git lui-même :
+
+```
+"Montre-moi les fichiers modifiés depuis hier"
+
+"Crée un message de commit pour ces changements"
+
+"Explique ce que fait ce commit : abc1234"
+
+"Y a-t-il des fichiers sensibles dans le staging ?"
+```
+
+### Exemple : commit message automatique
+
+Avec Simon Willison's LLM CLI :
+
+```bash
+# Alias pour générer des commit messages
+alias gcm='git commit -m "$(git diff --staged | llm -s "Write a concise commit message")"'
+```
+
+Avec Claude Code :
+
+```bash
+# L'agent peut voir le diff et suggérer
+git diff --staged
+# "Suggère un message de commit pour ces changements"
+```
+
+## Bonnes pratiques spécifiques
+
+### 1. Toujours vérifier le .gitignore
+
+Avant de commiter après une session avec un agent :
+
+```bash
+# Voir ce qui serait commité
+git status
+
+# Vérifier qu'il n'y a pas de fichiers indésirables
+git diff --staged --name-only
+```
+
+Les agents peuvent créer :
+- Fichiers de cache (`*.pyc`, `node_modules/`)
+- Fichiers de config locaux (`.env.local`)
+- Fichiers temporaires (`*.tmp`, `*.bak`)
+
+### 2. Revue des imports et dépendances
+
+Les agents peuvent ajouter des dépendances :
+
+```bash
+# Voir les changements dans package.json/requirements.txt
+git diff package.json
+
+# Vérifier que les nouvelles dépendances sont légitimes
+```
+
+### 3. Attention aux secrets
+
+Les agents peuvent hardcoder des valeurs sensibles par inadvertance :
+
+```bash
+# Chercher des patterns suspects avant de commiter
+git diff --staged | grep -E "(password|secret|key|token)" -i
+```
+
+### 4. Valider avec les tests
+
+Avant de commiter du code généré par IA :
+
+```bash
+# Lancer les tests
+npm test           # ou pytest, cargo test, etc.
+
+# Si les tests passent, on commit
+git add . && git commit -m "feat: ..."
+
+# Si les tests échouent, on corrige d'abord
+```
+
+## Tracer l'origine du code
+
+### Convention de commit
+
+Certaines équipes marquent les commits générés par IA :
+
+```bash
+git commit -m "feat: add auth module [ai-assisted]"
+```
+
+### Métadonnées de commit
+
+Vous pouvez utiliser les trailers Git :
+
+```bash
+git commit -m "feat: add login feature" -m "" -m "AI-assisted: Claude Code"
+```
+
+Résultat :
+```
+feat: add login feature
+
+AI-assisted: Claude Code
+```
+
+### Co-authored-by
+
+Pour indiquer la collaboration :
+
+```bash
+git commit -m "feat: add dashboard
+
+Co-authored-by: claude-code <noreply@anthropic.com>"
+```
+
+## Gérer les erreurs de l'agent
+
+### L'agent a cassé quelque chose
+
+```bash
+# Option 1 : Annuler tout
+git checkout .
+
+# Option 2 : Revenir au dernier commit
+git reset --hard HEAD
+
+# Option 3 : Revenir à un point spécifique
+git log --oneline  # Trouver le bon commit
+git reset --hard abc1234
+```
+
+### L'agent a modifié des fichiers qu'il ne fallait pas
+
+```bash
+# Voir quels fichiers ont changé
+git status
+
+# Annuler les changements sur certains fichiers seulement
+git checkout -- src/dont-touch.js config/production.json
+```
+
+### Récupérer du travail perdu
+
+Si vous avez fait un `reset --hard` par erreur :
+
+```bash
+# Git garde un historique de HEAD
+git reflog
+
+# Trouver l'état avant le reset
+# abc1234 HEAD@{2}: commit: feat: good work
+
+# Récupérer
+git checkout abc1234
+# ou
+git reset --hard abc1234
+```
+
+## Collaboration multi-agents
+
+Si vous utilisez plusieurs agents sur le même projet :
+
+### Éviter les conflits
+
+```bash
+# Toujours partir d'un état frais
+git fetch origin main
+git checkout main
+git pull
+
+# Créer une branche pour chaque session/agent
+git checkout -b session/claude-auth-work
+```
+
+### Synchroniser régulièrement
+
+```bash
+# Pendant le travail, intégrer les changements de main
+git fetch origin main
+git rebase origin/main
+# ou
+git merge origin/main
+```
+
+## Checklist avant de pousser
+
+Après une session de vibe coding :
+
+- [ ] `git diff` - J'ai lu ce qui a changé
+- [ ] `git status` - Pas de fichiers indésirables
+- [ ] Tests passent (`npm test`, etc.)
+- [ ] Pas de secrets hardcodés
+- [ ] Message de commit descriptif
+- [ ] Branch bien nommée
+
+```bash
+# Script de validation (à personnaliser)
+#!/bin/bash
+echo "=== Pre-push check ==="
+echo "Files to be committed:"
+git diff --cached --name-only
+echo ""
+echo "Running tests..."
+npm test
+echo ""
+echo "Checking for secrets..."
+git diff --cached | grep -E "(password|secret|api.key)" && echo "⚠️ Possible secret!" || echo "✓ No obvious secrets"
+echo ""
+echo "Ready to push!"
+```
+
+---
+
+Prochain chapitre : [GitHub Actions](08-github-actions.qmd).

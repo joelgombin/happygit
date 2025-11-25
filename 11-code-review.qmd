@@ -1,0 +1,379 @@
+---
+title: "Code Review"
+---
+
+# Réviser du code généré par IA
+
+La revue de code prend une nouvelle dimension avec le vibe coding. Ce chapitre vous donne des stratégies pour réviser efficacement du code généré par IA.
+
+## Pourquoi la revue reste essentielle
+
+> "If an LLM wrote the code for you, and you then reviewed it, tested it thoroughly and made sure you could explain how it works to someone else—that's not vibe coding, it's software development."
+>
+> — Simon Willison
+
+La revue transforme le vibe coding en développement professionnel.
+
+## Les défis spécifiques
+
+### Volume de code
+
+Un agent peut générer des centaines de lignes en quelques secondes. Vous ne pouvez pas lire chaque ligne comme avant.
+
+### Cohérence stylistique
+
+Le code IA peut être fonctionnel mais incohérent avec le reste du projet.
+
+### Patterns subtils
+
+Les LLMs peuvent introduire des anti-patterns qui "marchent" mais sont problématiques :
+- Code dupliqué au lieu de fonctions réutilisables
+- Gestion d'erreur incomplète
+- Dépendances inutiles
+
+### Confiance excessive
+
+Après plusieurs succès, on peut devenir moins vigilant. C'est précisément le moment où les bugs passent.
+
+## Stratégies de revue
+
+### 1. La revue en entonnoir
+
+Commencez large, puis zoomez :
+
+```
+Vue d'ensemble → Structure → Logique → Détails
+```
+
+**Niveau 1 : Vue d'ensemble (30 secondes)**
+```bash
+git diff --stat
+# 15 files changed, 847 insertions(+), 234 deletions(-)
+```
+
+Questions :
+- Combien de fichiers touchés ?
+- Le volume est-il cohérent avec la demande ?
+- Y a-t-il des fichiers inattendus ?
+
+**Niveau 2 : Structure (2 minutes)**
+```bash
+git diff --name-only
+```
+
+Questions :
+- L'organisation des fichiers est-elle logique ?
+- Y a-t-il de nouveaux dossiers ? Sont-ils appropriés ?
+- Des fichiers de config ont-ils changé ?
+
+**Niveau 3 : Logique (5-10 minutes)**
+
+Lisez les parties critiques :
+- Points d'entrée (main, index, app)
+- Nouvelles fonctions publiques
+- Changements d'interface
+- Tests
+
+**Niveau 4 : Détails (selon besoin)**
+
+Zoom sur les zones sensibles :
+- Sécurité
+- Performance
+- Edge cases
+
+### 2. La revue par questions
+
+Posez-vous des questions systématiques :
+
+```markdown
+## Fonctionnalité
+- [ ] Le code fait-il ce qui était demandé ?
+- [ ] Les edge cases sont-ils gérés ?
+- [ ] Le comportement est-il prévisible ?
+
+## Architecture
+- [ ] Le code est-il au bon endroit ?
+- [ ] Les responsabilités sont-elles claires ?
+- [ ] Les dépendances sont-elles appropriées ?
+
+## Qualité
+- [ ] Le code est-il lisible ?
+- [ ] Les noms sont-ils explicites ?
+- [ ] Y a-t-il de la duplication ?
+
+## Robustesse
+- [ ] Les erreurs sont-elles gérées ?
+- [ ] Les inputs sont-ils validés ?
+- [ ] Les ressources sont-elles nettoyées ?
+
+## Sécurité
+- [ ] Pas de secrets hardcodés ?
+- [ ] Pas d'injection possible ?
+- [ ] Authentification/autorisation OK ?
+```
+
+### 3. La revue différentielle
+
+Comparez avec du code similaire existant :
+
+```bash
+# Trouver du code similaire dans le projet
+grep -r "function login" src/
+
+# Comparer le style
+diff src/existing-auth.js src/new-auth.js
+```
+
+### 4. La revue assistée par IA
+
+Utilisez un agent pour réviser le code d'un autre agent :
+
+```
+"Révise ce code. Points d'attention :
+1. Sécurité : y a-t-il des vulnérabilités ?
+2. Performance : y a-t-il des problèmes de performance ?
+3. Maintenabilité : le code est-il facile à comprendre ?
+4. Tests : les cas importants sont-ils couverts ?"
+```
+
+::: {.callout-note}
+## Meta-review
+
+L'IA peut rater les mêmes choses que l'IA qui a écrit le code. Utilisez cela comme complément, pas comme substitut à votre jugement.
+:::
+
+## Pull Requests efficaces
+
+### Template de PR pour code IA
+
+```markdown
+## Description
+[Description de la fonctionnalité]
+
+## Type de changement
+- [ ] Feature
+- [ ] Bugfix
+- [ ] Refactoring
+- [ ] Documentation
+
+## Méthode de développement
+- [ ] Code écrit manuellement
+- [ ] Code assisté par IA (avec revue)
+- [ ] Vibe coding (revue minimale)
+
+## Checklist de revue
+- [ ] J'ai lu le diff
+- [ ] Les tests passent
+- [ ] Pas de secrets dans le code
+- [ ] Le code suit les conventions du projet
+- [ ] J'ai compris ce que fait le code
+
+## Tests effectués
+[Description des tests manuels]
+
+## Notes pour les reviewers
+[Zones d'attention particulière]
+```
+
+### Labels utiles
+
+Créez des labels pour la visibilité :
+
+- `ai-generated` : Code principalement généré par IA
+- `needs-careful-review` : Revue approfondie requise
+- `large-diff` : Beaucoup de changements
+- `security-sensitive` : Touche à la sécurité
+
+### Review guidelines
+
+Pour votre équipe :
+
+```markdown
+# Code Review Guidelines (AI Era)
+
+## Pour l'auteur
+1. Indiquez si le code est AI-generated
+2. Expliquez ce que vous avez vérifié
+3. Mentionnez les zones d'incertitude
+
+## Pour le reviewer
+1. Ne faites pas confiance aveuglément au "ça marche"
+2. Vérifiez les edge cases
+3. Questionnez les dépendances nouvelles
+4. Testez localement les changements significatifs
+
+## Red flags AI-code
+- Dépendances inhabituelles
+- Code trop complexe pour la tâche
+- Patterns incohérents avec le projet
+- Gestion d'erreur absente ou trop simple
+```
+
+## Outils de revue
+
+### Git diff avancé
+
+```bash
+# Diff avec contexte
+git diff -U10  # 10 lignes de contexte
+
+# Diff word-by-word
+git diff --word-diff
+
+# Diff ignorant les espaces
+git diff -w
+
+# Diff coloré dans less
+git diff --color=always | less -R
+
+# Stats uniquement
+git diff --stat
+```
+
+### GitHub PR review
+
+```bash
+# Voir une PR localement
+gh pr checkout 123
+
+# Diff de la PR
+gh pr diff 123
+
+# Ajouter un commentaire
+gh pr review 123 --comment --body "Question sur la ligne X"
+```
+
+### VS Code / Cursor
+
+- GitLens pour l'historique inline
+- GitHub Pull Requests extension
+- Diff view intégré
+
+## Patterns de revue par type
+
+### Nouveau fichier
+
+```markdown
+Questions :
+1. Ce fichier devrait-il exister ?
+2. Est-il au bon endroit ?
+3. Le nom est-il approprié ?
+4. Les exports sont-ils corrects ?
+```
+
+### Refactoring
+
+```markdown
+Questions :
+1. Le comportement est-il préservé ?
+2. Les tests passent-ils toujours ?
+3. Les dépendants sont-ils mis à jour ?
+4. La migration est-elle documentée ?
+```
+
+### Bugfix
+
+```markdown
+Questions :
+1. Le bug est-il vraiment corrigé ?
+2. Y a-t-il un test qui le prouve ?
+3. Le fix n'introduit-il pas de régression ?
+4. Les cas similaires sont-ils vérifiés ?
+```
+
+### Nouvelle dépendance
+
+```markdown
+Questions :
+1. Cette dépendance est-elle nécessaire ?
+2. Est-elle maintenue activement ?
+3. A-t-elle des vulnérabilités connues ?
+4. Quelle est sa taille/impact sur le bundle ?
+```
+
+## Automatiser la revue
+
+### Checks automatiques
+
+```yaml
+# .github/workflows/pr-checks.yml
+name: PR Checks
+
+on: pull_request
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
+      - name: Check bundle size
+        uses: siddharthkp/bundlesize-action@v1
+
+      - name: Check for console.log
+        run: |
+          if grep -r "console.log" src/; then
+            echo "::warning::console.log found in code"
+          fi
+```
+
+### Bot de revue
+
+```yaml
+# Danger.js ou similar
+- name: Danger
+  uses: danger/danger-js@v11
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+```javascript
+// dangerfile.js
+import { danger, warn, fail } from "danger"
+
+// Warn on big PRs
+if (danger.github.pr.additions > 500) {
+  warn("This PR is quite large. Consider breaking it up.")
+}
+
+// Require description
+if (danger.github.pr.body.length < 10) {
+  fail("Please add a description to your PR")
+}
+
+// Check for AI mention
+if (!danger.github.pr.body.includes("AI") &&
+    danger.github.pr.body.includes("generated")) {
+  warn("If this code was AI-generated, please indicate it explicitly")
+}
+```
+
+## La revue comme apprentissage
+
+### Pour les débutants
+
+Lire du code généré par IA est une excellente façon d'apprendre :
+
+1. Demandez à l'agent d'expliquer chaque partie
+2. Comparez avec d'autres façons de faire
+3. Cherchez les patterns réutilisables
+
+### Pour les expérimentés
+
+C'est l'occasion de :
+1. Voir de nouvelles approches
+2. Challenger vos habitudes
+3. Apprendre des patterns de différentes communautés (le LLM a vu beaucoup de code !)
+
+---
+
+Dernier chapitre : [Troubleshooting](12-troubleshooting.qmd).

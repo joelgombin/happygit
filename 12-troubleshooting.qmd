@@ -1,0 +1,431 @@
+---
+title: "Troubleshooting"
+---
+
+# Résoudre les problèmes courants
+
+Ce chapitre couvre les situations problématiques fréquentes et comment les résoudre.
+
+## Problèmes Git courants
+
+### "Your branch is behind"
+
+```
+Your branch is behind 'origin/main' by 3 commits
+```
+
+**Solution :**
+```bash
+# Option 1 : Merge (garde l'historique)
+git pull origin main
+
+# Option 2 : Rebase (historique linéaire)
+git pull --rebase origin main
+```
+
+### "Your branch has diverged"
+
+```
+Your branch and 'origin/main' have diverged
+```
+
+**Solution :**
+```bash
+# Voir la situation
+git log --oneline --graph --all
+
+# Option 1 : Rebase sur main
+git rebase origin/main
+# Résoudre les conflits si nécessaire
+git rebase --continue
+
+# Option 2 : Merge
+git merge origin/main
+```
+
+### Conflits de merge
+
+```
+CONFLICT (content): Merge conflict in file.js
+```
+
+**Solution :**
+```bash
+# Voir les fichiers en conflit
+git status
+
+# Ouvrir et résoudre manuellement
+# Chercher <<<<<<<, =======, >>>>>>>
+
+# Après résolution
+git add file.js
+git commit -m "Resolve merge conflict"
+```
+
+**Avec un agent :**
+```
+"Résous le conflit dans src/app.js.
+Contexte : on veut garder les deux fonctionnalités
+ajoutées par chaque branche."
+```
+
+### "Detached HEAD"
+
+```
+You are in 'detached HEAD' state
+```
+
+**Solution :**
+```bash
+# Revenir à une branche
+git checkout main
+
+# Ou créer une branche à partir de l'état actuel
+git checkout -b my-new-branch
+```
+
+### Commit sur la mauvaise branche
+
+**Déplacer le dernier commit :**
+```bash
+# Sauvegarder le commit
+git log -1  # Noter le hash
+
+# Annuler le commit (garder les changements)
+git reset --soft HEAD~1
+
+# Changer de branche
+git stash
+git checkout correct-branch
+git stash pop
+
+# Commiter sur la bonne branche
+git add .
+git commit -m "Your message"
+```
+
+### Annuler un push
+
+```bash
+# Créer un commit qui annule les changements
+git revert HEAD
+
+# Ou plusieurs commits
+git revert HEAD~3..HEAD
+
+# Push le revert
+git push
+```
+
+::: {.callout-warning}
+## Ne pas force push sur des branches partagées
+
+Évitez `git push --force` sur main ou des branches où d'autres travaillent. Utilisez `git revert` à la place.
+:::
+
+## Problèmes avec les agents
+
+### L'agent a cassé le projet
+
+```bash
+# Solution rapide : tout annuler
+git checkout .
+git clean -fd  # Supprime les fichiers non suivis
+
+# Solution ciblée : voir ce qui a changé
+git diff
+# Annuler fichier par fichier
+git checkout -- file-that-works.js
+
+# Revenir à un bon état connu
+git log --oneline
+git checkout abc1234 -- .
+```
+
+### L'agent a créé des fichiers indésirables
+
+```bash
+# Voir les fichiers non suivis
+git status
+
+# Supprimer un fichier spécifique
+rm unwanted-file.txt
+
+# Supprimer tous les fichiers non suivis
+git clean -fd
+
+# Preview avant de supprimer
+git clean -fd --dry-run
+```
+
+### L'agent a modifié des fichiers qu'il ne fallait pas
+
+```bash
+# Voir les fichiers modifiés
+git diff --name-only
+
+# Restaurer certains fichiers
+git checkout -- config/production.json
+git checkout -- .env.example
+```
+
+### Code incompréhensible
+
+Demandez des explications :
+```
+"Explique ce que fait cette fonction ligne par ligne :
+[coller le code]"
+```
+
+Ou demandez une réécriture :
+```
+"Réécris cette fonction de manière plus simple
+et lisible, avec des commentaires explicatifs."
+```
+
+## Problèmes d'authentification
+
+### "Permission denied (publickey)"
+
+```bash
+# Vérifier que l'agent SSH tourne
+eval "$(ssh-agent -s)"
+
+# Lister les clés chargées
+ssh-add -l
+
+# Si vide, ajouter la clé
+ssh-add ~/.ssh/id_ed25519
+
+# Tester la connexion
+ssh -T git@github.com
+```
+
+### "Repository not found"
+
+Causes possibles :
+1. URL incorrecte
+2. Pas d'accès au repo
+3. Mauvais compte authentifié
+
+```bash
+# Vérifier l'URL
+git remote -v
+
+# Vérifier l'accès
+gh auth status
+
+# Corriger l'URL si nécessaire
+git remote set-url origin git@github.com:user/repo.git
+```
+
+### Token expiré
+
+```bash
+# GitHub CLI
+gh auth refresh
+
+# Ou re-login
+gh auth login
+```
+
+## Problèmes de CI/CD
+
+### Les tests passent localement mais pas en CI
+
+**Causes courantes :**
+
+1. **Variables d'environnement** :
+```bash
+# Vérifier que les secrets sont configurés
+# GitHub → Settings → Secrets
+```
+
+2. **Versions différentes** :
+```yaml
+# Fixer les versions dans le workflow
+- uses: actions/setup-node@v4
+  with:
+    node-version: '20.10.0'  # Version exacte
+```
+
+3. **État du cache** :
+```yaml
+# Invalider le cache
+key: ${{ runner.os }}-${{ hashFiles('**/lockfile') }}-v2  # Changer v2
+```
+
+4. **Différences OS** :
+```yaml
+# Tester sur le même OS
+runs-on: ubuntu-22.04  # Version spécifique
+```
+
+### Le workflow ne se déclenche pas
+
+```yaml
+# Vérifier le trigger
+on:
+  push:
+    branches: [main]  # La branche est-elle correcte ?
+    paths:
+      - 'src/**'      # Le path match-t-il ?
+```
+
+### Timeout
+
+```yaml
+jobs:
+  build:
+    timeout-minutes: 30  # Augmenter si nécessaire
+
+    steps:
+      - name: Long step
+        timeout-minutes: 10  # Timeout par step
+        run: npm test
+```
+
+## Récupération de données
+
+### Fichiers supprimés par erreur
+
+```bash
+# Si non commité
+git checkout -- deleted-file.js
+
+# Si dans un commit précédent
+git log --all --full-history -- path/to/file
+git checkout abc1234 -- path/to/file
+```
+
+### Retrouver du travail perdu
+
+```bash
+# L'historique de HEAD
+git reflog
+
+# Exemple de sortie :
+# abc1234 HEAD@{0}: reset: moving to HEAD~3
+# def5678 HEAD@{1}: commit: My work  ← Le travail "perdu"
+
+# Récupérer
+git checkout def5678
+# ou
+git cherry-pick def5678
+```
+
+### Récupérer un stash supprimé
+
+```bash
+# Lister tous les objets perdus
+git fsck --lost-found
+
+# Chercher dans les objets
+git show <hash>
+
+# Récupérer
+git stash apply <hash>
+```
+
+## Problèmes de performance
+
+### Clone lent
+
+```bash
+# Clone superficiel (sans historique complet)
+git clone --depth 1 https://github.com/user/repo.git
+
+# Clone partiel (blobs à la demande)
+git clone --filter=blob:none https://github.com/user/repo.git
+```
+
+### Git status lent
+
+```bash
+# Voir ce qui prend du temps
+GIT_TRACE=1 git status
+
+# Ignorer les changements de permission
+git config core.fileMode false
+
+# Sur les gros repos
+git config core.untrackedCache true
+git config core.fsmonitor true
+```
+
+### Repo devenu énorme
+
+```bash
+# Voir les plus gros fichiers
+git rev-list --objects --all | \
+  git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | \
+  awk '/^blob/ {print $3, $4}' | sort -rn | head -20
+
+# Nettoyer (après suppression des gros fichiers)
+git gc --aggressive --prune=now
+```
+
+## FAQ
+
+### Comment savoir si du code a été généré par IA ?
+
+Il n'y a pas de méthode infaillible. Indices possibles :
+- Style légèrement différent du reste du projet
+- Commentaires plus verbeux ou dans un style particulier
+- Patterns "corrects mais génériques"
+
+### Faut-il mentionner l'utilisation d'IA dans les commits ?
+
+C'est une décision d'équipe. Options :
+- Ajouter `[AI]` ou `[ai-assisted]` dans le message
+- Utiliser un trailer : `AI-assisted: Claude`
+- Ne pas mentionner si le code a été révisé
+
+### L'IA peut-elle résoudre mes conflits Git ?
+
+Oui, souvent efficacement :
+```
+"J'ai un conflit de merge dans file.js.
+Le conflit est :
+[coller le conflit]
+Contexte : on veut [expliquer l'intention]"
+```
+
+### Comment maintenir du code qu'on ne comprend pas ?
+
+1. **Demandez des explications** à l'agent qui l'a écrit
+2. **Ajoutez des tests** pour verrouiller le comportement
+3. **Documentez** au fur et à mesure que vous comprenez
+4. **Refactorisez progressivement** vers quelque chose de plus clair
+
+### Peut-on faire confiance aux tests générés par IA ?
+
+Vérifiez que les tests :
+- Testent vraiment ce qu'ils prétendent tester
+- Incluent des cas limites
+- Peuvent échouer (testez en cassant le code volontairement)
+- Sont maintenables
+
+---
+
+## Ressources supplémentaires
+
+### Documentation officielle
+- [Git Documentation](https://git-scm.com/doc)
+- [GitHub Docs](https://docs.github.com)
+- [GitHub Actions](https://docs.github.com/actions)
+
+### Communauté
+- [Simon Willison's Blog](https://simonwillison.net/)
+- [Andrej Karpathy](https://karpathy.ai/)
+- [The Pragmatic Engineer](https://newsletter.pragmaticengineer.com/)
+
+### Outils mentionnés
+- [Claude Code](https://claude.ai/code)
+- [Cursor](https://cursor.com)
+- [GitHub Copilot](https://github.com/features/copilot)
+- [Aider](https://aider.chat)
+
+---
+
+Félicitations ! Vous avez terminé le guide. Bonne vibe coding ! 🎉
