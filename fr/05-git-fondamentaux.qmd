@@ -13,22 +13,22 @@ Même si votre agent de code gère beaucoup de choses, comprendre Git vous rend 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Working Directory                         │
-│                (vos fichiers sur le disque)                  │
+│                    Working Directory                        │
+│                (vos fichiers sur le disque)                 │
 └─────────────────────────────────────────────────────────────┘
                             │
                             │ git add
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     Staging Area                             │
-│              (fichiers prêts à être commités)                │
+│                     Staging Area                            │
+│              (fichiers prêts à être commités)               │
 └─────────────────────────────────────────────────────────────┘
                             │
                             │ git commit
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                       Repository                             │
-│               (historique des commits)                       │
+│                       Repository                            │
+│               (historique des commits)                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
