@@ -2,6 +2,30 @@
 title: "Happy Git for Vibe Coders"
 subtitle: "Mastering Git & GitHub in the Age of AI Agents"
 sidebar: en
+description: "Master Git and GitHub for AI-assisted development. Complete guide for developers using Claude Code, Cursor, GitHub Copilot and other AI coding agents. Learn vibe coding and Software 3.0 best practices."
+keywords:
+  - git tutorial
+  - github guide
+  - ai coding assistant
+  - claude code
+  - cursor ide
+  - github copilot
+  - vibe coding
+  - software 3.0
+  - ai pair programming
+  - llm development
+author: "Joel Gombin"
+lang: en
+image: "../img/cover.png"
+twitter-card:
+  title: "Happy Git for Vibe Coders - English Guide"
+  description: "Master Git & GitHub with AI coding agents. Complete tutorial for Claude Code, Cursor, and GitHub Copilot users."
+  image: "../img/cover.png"
+open-graph:
+  title: "Happy Git for Vibe Coders - English Guide"
+  description: "Master Git & GitHub in the age of AI coding agents. A practical guide for developers using Claude Code, Cursor, GitHub Copilot and other AI assistants."
+  image: "../img/cover.png"
+  locale: en_US
 ---
 
 # Welcome {.unnumbered}

@@ -4,8 +4,23 @@ project:
 
 website:
   title: "Happy Git for Vibe Coders"
+  description: "Master Git & GitHub in the age of AI coding agents. A practical bilingual guide for developers using Claude Code, Cursor, GitHub Copilot and other AI assistants."
+  site-url: https://joelgombin.github.io/happygit/
   repo-url: https://github.com/joelgombin/happygit
   repo-actions: [edit, issue]
+
+  open-graph:
+    locale: en_US
+    site-name: "Happy Git for Vibe Coders"
+
+  twitter-card:
+    creator: "@joelgombin"
+    site: "@joelgombin"
+    card-style: summary_large_image
+
+  google-analytics:
+    tracking-id: "G-XXXXXXXXXX"
+    anonymize-ip: true
 
   navbar:
     background: primary
@@ -95,6 +110,9 @@ format:
     code-overflow: wrap
     toc: true
     toc-depth: 3
+    include-in-header: seo-metadata.html
+    link-external-newwindow: true
+    link-external-icon: true
 
 execute:
   freeze: auto

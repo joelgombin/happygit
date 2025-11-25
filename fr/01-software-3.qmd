@@ -1,6 +1,17 @@
 ---
 title: "L'ère du Software 3.0"
+subtitle: "Comprendre la vision d'Andrej Karpathy sur le développement piloté par l'IA"
 sidebar: fr
+description: "Découvrez le Software 3.0 - le paradigme d'Andrej Karpathy pour le développement piloté par l'IA. Comprenez l'évolution du code traditionnel au développement logiciel alimenté par les LLM."
+keywords:
+  - software 3.0
+  - andrej karpathy
+  - développement ia
+  - programmation llm
+  - réseaux neuronaux
+  - code piloté par ia
+author: "Joel Gombin"
+lang: fr
 ---
 
 # Comprendre la révolution en cours

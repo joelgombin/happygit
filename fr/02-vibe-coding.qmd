@@ -1,6 +1,19 @@
 ---
 title: "Le Vibe Coding"
+subtitle: "Le nouveau paradigme de la programmation assistée par IA"
 sidebar: fr
+description: "Découvrez le vibe coding - le terme d'Andrej Karpathy pour la programmation pilotée par IA. Apprenez quand faire confiance aux agents IA, les meilleures pratiques pour le développement assisté par LLM."
+keywords:
+  - vibe coding
+  - programmation ia
+  - codage llm
+  - claude code
+  - cursor ide
+  - génération code ia
+  - accept all
+  - développement assisté ia
+author: "Joel Gombin"
+lang: fr
 ---
 
 # Définition et pratiques du vibe coding
