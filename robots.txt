@@ -4,7 +4,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://joelgombin.github.io/happygit/sitemap.xml
+Sitemap: https://happygit4vibecoders.com/sitemap.xml
 
 # Disallow indexing of search results if any
 Disallow: /search?
@@ -30,4 +30,4 @@ Allow: /
 Crawl-delay: 1
 
 # Host preference (for Yandex)
-Host: https://joelgombin.github.io
+Host: https://happygit4vibecoders.com

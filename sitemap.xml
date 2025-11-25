@@ -4,238 +4,238 @@
 
   <!-- Main Landing Page -->
   <url>
-    <loc>https://joelgombin.github.io/happygit/</loc>
+    <loc>https://happygit4vibecoders.com/</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/" />
   </url>
 
   <!-- English Section -->
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/</loc>
+    <loc>https://happygit4vibecoders.com/en/</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/01-software-3.html</loc>
+    <loc>https://happygit4vibecoders.com/en/01-software-3.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/01-software-3.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/01-software-3.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/02-vibe-coding.html</loc>
+    <loc>https://happygit4vibecoders.com/en/02-vibe-coding.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/02-vibe-coding.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/02-vibe-coding.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/03-installation.html</loc>
+    <loc>https://happygit4vibecoders.com/en/03-installation.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/03-installation.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/03-installation.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/04-github-setup.html</loc>
+    <loc>https://happygit4vibecoders.com/en/04-github-setup.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/04-configuration-github.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/04-configuration-github.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/05-git-basics.html</loc>
+    <loc>https://happygit4vibecoders.com/en/05-git-basics.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/05-git-fondamentaux.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/05-git-fondamentaux.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/06-branches-workflow.html</loc>
+    <loc>https://happygit4vibecoders.com/en/06-branches-workflow.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/06-branches-workflow.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/06-branches-workflow.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/07-agents-and-git.html</loc>
+    <loc>https://happygit4vibecoders.com/en/07-agents-and-git.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/07-agents-et-git.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/07-agents-et-git.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/08-github-actions.html</loc>
+    <loc>https://happygit4vibecoders.com/en/08-github-actions.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/08-github-actions.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/08-github-actions.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/09-ci-cd-agents.html</loc>
+    <loc>https://happygit4vibecoders.com/en/09-ci-cd-agents.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/09-ci-cd-agents.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/09-ci-cd-agents.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/10-security.html</loc>
+    <loc>https://happygit4vibecoders.com/en/10-security.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/10-securite.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/10-securite.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/11-code-review.html</loc>
+    <loc>https://happygit4vibecoders.com/en/11-code-review.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/11-code-review.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/11-code-review.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/12-troubleshooting.html</loc>
+    <loc>https://happygit4vibecoders.com/en/12-troubleshooting.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/12-troubleshooting.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/12-troubleshooting.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/en/references.html</loc>
+    <loc>https://happygit4vibecoders.com/en/references.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://joelgombin.github.io/happygit/fr/references.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://happygit4vibecoders.com/fr/references.html" />
   </url>
 
   <!-- French Section -->
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/</loc>
+    <loc>https://happygit4vibecoders.com/fr/</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/01-software-3.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/01-software-3.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/01-software-3.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/01-software-3.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/02-vibe-coding.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/02-vibe-coding.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/02-vibe-coding.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/02-vibe-coding.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/03-installation.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/03-installation.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/03-installation.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/03-installation.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/04-configuration-github.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/04-configuration-github.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/04-github-setup.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/04-github-setup.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/05-git-fondamentaux.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/05-git-fondamentaux.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/05-git-basics.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/05-git-basics.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/06-branches-workflow.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/06-branches-workflow.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/06-branches-workflow.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/06-branches-workflow.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/07-agents-et-git.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/07-agents-et-git.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/07-agents-and-git.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/07-agents-and-git.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/08-github-actions.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/08-github-actions.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/08-github-actions.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/08-github-actions.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/09-ci-cd-agents.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/09-ci-cd-agents.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/09-ci-cd-agents.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/09-ci-cd-agents.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/10-securite.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/10-securite.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/10-security.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/10-security.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/11-code-review.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/11-code-review.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/11-code-review.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/11-code-review.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/12-troubleshooting.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/12-troubleshooting.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/12-troubleshooting.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/12-troubleshooting.html" />
   </url>
 
   <url>
-    <loc>https://joelgombin.github.io/happygit/fr/references.html</loc>
+    <loc>https://happygit4vibecoders.com/fr/references.html</loc>
     <lastmod>2025-01-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://joelgombin.github.io/happygit/en/references.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://happygit4vibecoders.com/en/references.html" />
   </url>
 
 </urlset>

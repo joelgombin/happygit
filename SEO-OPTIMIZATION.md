@@ -145,20 +145,23 @@ Benefits:
 
 ### Immediate Actions
 
-1. **Add Google Analytics tracking ID** in `_quarto.yml`
-   - Replace `G-XXXXXXXXXX` with actual tracking ID
-   - Enable to track visitor behavior
+1. **Configure Matomo Analytics** in `matomo-analytics.html`
+   - Replace `MATOMO_URL` with your Matomo instance URL (e.g., analytics.example.com)
+   - Replace `SITE_ID` with your Matomo Site ID (e.g., 1, 2, 3...)
+   - Matomo provides privacy-friendly, GDPR-compliant analytics
 
-2. **Update Twitter handle** in `_quarto.yml`
-   - Replace `@joelgombin` with actual Twitter handle if different
-   - Or remove if not using Twitter
+2. **Update Bluesky handles** in `_quarto.yml` (if needed)
+   - Currently set to `@joelgombin.bsky.social` and `@happygit4vibecoders.bsky.social`
+   - Update with your actual Bluesky handles if different
 
 3. **Verify sitemap.xml** is accessible after build
-   - Should be at: https://joelgombin.github.io/happygit/sitemap.xml
+   - Should be at: https://happygit4vibecoders.com/sitemap.xml
    - Submit to Google Search Console
 
-4. **Add .nojekyll file** to docs/ folder
-   - Ensures GitHub Pages serves all files correctly
+4. **Configure DNS for custom domain**
+   - Point happygit4vibecoders.com to your hosting provider
+   - If using GitHub Pages: Create CNAME file in docs/ folder
+   - Ensure SSL/TLS certificate is configured
 
 ### Search Console Setup
 
