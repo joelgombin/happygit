@@ -173,6 +173,5 @@ Git devient plus important que jamais comme :
 - **Machine à voyager dans le temps** pour comprendre le contexte
 
 ---
-sidebar: fr
 
 Dans le prochain chapitre, nous explorons plus en détail ce qu'est le *vibe coding* et comment le pratiquer de manière responsable.

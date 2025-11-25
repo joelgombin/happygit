@@ -407,9 +407,6 @@ Vérifiez que les tests :
 - Peuvent échouer (testez en cassant le code volontairement)
 - Sont maintenables
 
----
-sidebar: fr
-
 ## Ressources supplémentaires
 
 ### Documentation officielle
@@ -429,6 +426,5 @@ sidebar: fr
 - [Aider](https://aider.chat)
 
 ---
-sidebar: fr
 
 Félicitations ! Vous avez terminé le guide. Bonne vibe coding ! 🎉

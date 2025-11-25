@@ -376,6 +376,5 @@ C'est l'occasion de :
 3. Apprendre des patterns de différentes communautés (le LLM a vu beaucoup de code !)
 
 ---
-sidebar: fr
 
 Dernier chapitre : [Troubleshooting](12-troubleshooting.qmd).

@@ -356,6 +356,5 @@ echo "Ready to push!"
 ```
 
 ---
-sidebar: fr
 
 Prochain chapitre : [GitHub Actions](08-github-actions.qmd).
