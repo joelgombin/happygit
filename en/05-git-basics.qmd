@@ -13,22 +13,22 @@ Even if your coding agent handles a lot, understanding Git makes you more effect
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Working Directory                         │
-│                  (your files on disk)                        │
+│                    Working Directory                        │
+│                  (your files on disk)                       │
 └─────────────────────────────────────────────────────────────┘
                             │
                             │ git add
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     Staging Area                             │
-│                (files ready to be committed)                 │
+│                     Staging Area                            │
+│                (files ready to be committed)                │
 └─────────────────────────────────────────────────────────────┘
                             │
                             │ git commit
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                       Repository                             │
-│                   (commit history)                           │
+│                       Repository                            │
+│                   (commit history)                          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
