@@ -1,5 +1,6 @@
 ---
 title: "GitHub Actions"
+sidebar: fr
 ---
 
 # Automatiser avec GitHub Actions
@@ -518,5 +519,6 @@ steps:
 ```
 
 ---
+sidebar: fr
 
 Prochain chapitre : [CI/CD avec les agents](09-ci-cd-agents.qmd).

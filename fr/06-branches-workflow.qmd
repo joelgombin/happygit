@@ -1,5 +1,6 @@
 ---
 title: "Branches et Workflows"
+sidebar: fr
 ---
 
 # Organiser son travail avec les branches
@@ -347,5 +348,6 @@ git bisect reset
 ```
 
 ---
+sidebar: fr
 
 Prochain chapitre : [Agents et Git](07-agents-et-git.qmd).

@@ -1,5 +1,6 @@
 ---
 title: "Installation"
+sidebar: fr
 ---
 
 # Installer Git et les outils essentiels
@@ -276,5 +277,6 @@ secrets.json
 Votre environnement est prêt ! Dans le prochain chapitre, nous configurons l'authentification avec GitHub.
 
 ---
+sidebar: fr
 
 → [Configuration GitHub](04-configuration-github.qmd)

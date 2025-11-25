@@ -1,0 +1,359 @@
+---
+title: "Git Basics"
+sidebar: en
+---
+
+# Understanding Git to Better Collaborate with AI
+
+Even if your coding agent handles a lot, understanding Git makes you more effective. This chapter covers the essential concepts.
+
+## The Mental Model of Git
+
+### The Three Areas
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Working Directory                         │
+│                  (your files on disk)                        │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            │ git add
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     Staging Area                             │
+│                (files ready to be committed)                 │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            │ git commit
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                       Repository                             │
+│                   (commit history)                           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Why This Matters for Vibe Coding
+
+When a coding agent modifies your files:
+1. Changes are in the **Working Directory**
+2. You must **stage** (add) them to prepare
+3. Then **commit** them to save
+
+This gives you checkpoints to:
+- Roll back if the agent makes a mistake
+- See exactly what changed
+- Separate changes into logical commits
+
+## Essential Commands
+
+### See Current State
+
+```bash
+# Overall status
+git status
+
+# Short version
+git status -s
+```
+
+Typical output:
+```
+On branch main
+Changes not staged for commit:
+  modified:   src/app.py
+  deleted:    old-file.txt
+
+Untracked files:
+  new-file.js
+```
+
+### See Changes
+
+```bash
+# Unstaged changes
+git diff
+
+# Staged changes (ready to commit)
+git diff --staged
+
+# Diff of a specific file
+git diff src/app.py
+```
+
+::: {.callout-tip}
+## Reading AI Diffs
+
+When an agent generates code, `git diff` is your best friend for understanding what changed. Make a habit of reading it before committing.
+:::
+
+### Adding Files
+
+```bash
+# Add a specific file
+git add src/app.py
+
+# Add all modified files
+git add .
+
+# Add interactively (choose parts)
+git add -p
+```
+
+### Creating a Commit
+
+```bash
+# Commit with inline message
+git commit -m "Add user authentication"
+
+# Commit with editor (for long messages)
+git commit
+
+# Add and commit in one step (already tracked files)
+git commit -am "Fix login bug"
+```
+
+### Commit Messages
+
+A good commit message:
+
+```
+type: short description (50 chars max)
+
+More detailed explanation if needed.
+Why this change? What problem does it solve?
+
+Refs: #123
+```
+
+Common types:
+- `feat:` new feature
+- `fix:` bug fix
+- `refactor:` restructuring without functional change
+- `docs:` documentation
+- `test:` adding/modifying tests
+- `chore:` maintenance, dependencies
+
+::: {.callout-note}
+## AI-Generated Commits
+
+Some agents can generate commit messages. Check that they're relevant! A message like "Update code" helps no one.
+:::
+
+### View History
+
+```bash
+# Basic history
+git log
+
+# One line per commit
+git log --oneline
+
+# With branch graph
+git log --oneline --graph --all
+
+# Last 5 commits
+git log -5
+
+# Commits for a specific file
+git log -- src/app.py
+```
+
+### Undoing Changes
+
+```bash
+# Undo unstaged changes to a file
+git checkout -- file.py
+# or (Git 2.23+)
+git restore file.py
+
+# Remove a file from staging
+git reset HEAD file.py
+# or (Git 2.23+)
+git restore --staged file.py
+
+# Undo the last commit (keep changes)
+git reset --soft HEAD~1
+
+# Undo the last commit (discard changes)
+git reset --hard HEAD~1
+```
+
+::: {.callout-warning}
+## `--hard` is Destructive
+
+`git reset --hard` permanently deletes uncommitted changes. Use with caution.
+:::
+
+## Basic Workflow with an Agent
+
+Here's a typical workflow when using a coding agent:
+
+```bash
+# 1. Create a branch for the work
+git checkout -b feature/add-login
+
+# 2. Launch your agent and give instructions
+# [Agent modifies files]
+
+# 3. See what changed
+git status
+git diff
+
+# 4. If satisfied, add the changes
+git add .
+
+# 5. Commit with a clear message
+git commit -m "feat: add user login functionality"
+
+# 6. If the agent made more changes...
+# Repeat 3-5
+
+# 7. Push to GitHub
+git push -u origin feature/add-login
+```
+
+## Understanding HEAD and References
+
+### HEAD
+
+`HEAD` points to your current position:
+
+```bash
+# See where HEAD is
+cat .git/HEAD
+# ref: refs/heads/main
+
+# The current commit
+git rev-parse HEAD
+# a1b2c3d4...
+```
+
+### Relative References
+
+```bash
+HEAD~1    # The parent commit
+HEAD~2    # Two commits back
+HEAD^     # The first parent (same as HEAD~1)
+```
+
+Useful for:
+```bash
+# See the last 3 commits
+git log HEAD~3..HEAD
+
+# Compare with state from 5 commits ago
+git diff HEAD~5
+```
+
+## .gitignore
+
+The `.gitignore` file tells Git which files to ignore:
+
+```gitignore
+# Comments with #
+
+# Ignore a specific file
+secret.key
+
+# Ignore a file type
+*.log
+
+# Ignore a folder
+node_modules/
+__pycache__/
+
+# Exception (don't ignore)
+!important.log
+
+# Pattern
+temp-*
+*.tmp
+```
+
+::: {.callout-important}
+## Before Committing with an Agent
+
+Check your `.gitignore`! Agents can create temporary files or local configurations you don't want to commit.
+:::
+
+## Recovering from Errors
+
+### The Agent Broke Something
+
+```bash
+# Option 1: revert to last commit
+git checkout .
+# or
+git restore .
+
+# Option 2: revert to a specific commit
+git checkout abc1234 -- .
+
+# Option 3: undo recent commits
+git reset --hard HEAD~3
+```
+
+### Finding Lost Code
+
+```bash
+# See history of all refs
+git reflog
+
+# Recover a previous state
+git checkout HEAD@{5}
+```
+
+### Stash: Temporarily Set Aside
+
+```bash
+# Save current changes
+git stash
+
+# View stashes
+git stash list
+
+# Recover the last stash
+git stash pop
+
+# Recover without deleting
+git stash apply
+```
+
+## Best Practices Specific to Vibe Coding
+
+### 1. Commit Often
+
+With an agent making rapid changes, commit frequently:
+
+```bash
+# After each successful "step"
+git add .
+git commit -m "WIP: implemented login form"
+```
+
+### 2. Use Experimental Branches
+
+```bash
+git checkout -b experiment/crazy-idea
+# [Intense vibe coding]
+# If it works: merge
+# If it fails: delete branch
+```
+
+### 3. Check Diffs Before Committing
+
+```bash
+# Always before a commit
+git diff --staged
+```
+
+### 4. Keep Main Clean
+
+```bash
+# Never vibe code directly on main
+git checkout -b feature/something
+```
+
+---
+
+Next chapter: [Branches and Workflows](06-branches-workflow.qmd).

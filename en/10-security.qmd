@@ -1,0 +1,424 @@
+---
+title: "Security"
+sidebar: en
+---
+
+# Security and Git with AI Agents
+
+Vibe coding introduces new security risks. This chapter helps you code securely.
+
+## Risks Specific to Vibe Coding
+
+### 1. Hardcoded Secrets
+
+LLMs can generate code with hardcoded values:
+
+```python
+# AI can innocently generate this
+api_key = "sk-1234567890abcdef"  # ❌ DANGER
+database_url = "postgres://user:password@localhost/db"  # ❌ DANGER
+```
+
+### 2. Outdated Security Patterns
+
+LLMs are trained on historical code, including vulnerabilities:
+
+```python
+# SQL Injection (vulnerable)
+query = f"SELECT * FROM users WHERE id = {user_id}"  # ❌
+
+# Should be:
+cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))  # ✅
+```
+
+### 3. Malicious Dependencies
+
+An agent might suggest packages:
+- With known vulnerabilities
+- Abandoned long ago
+- With names similar to legitimate packages (typosquatting)
+
+### 4. Sensitive Data Exposure
+
+Generated code might log or expose sensitive data:
+
+```python
+# AI might generate
+print(f"User logged in: {user.email}, password: {user.password}")  # ❌
+```
+
+## Protecting Secrets
+
+### Golden Rule: Never in Code
+
+```bash
+# ❌ NEVER DO
+API_KEY = "my-secret-key"
+
+# ✅ ALWAYS DO
+API_KEY = os.environ.get("API_KEY")
+```
+
+### Environment Variables
+
+**`.env` file (local only):**
+```bash
+# .env - NEVER COMMIT
+DATABASE_URL=postgres://user:pass@localhost/db
+API_KEY=sk-1234567890
+SECRET_KEY=my-super-secret
+```
+
+**`.gitignore`:**
+```gitignore
+# Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets.json
+config.local.json
+```
+
+**Loading:**
+```python
+# Python with python-dotenv
+from dotenv import load_dotenv
+load_dotenv()
+
+api_key = os.environ.get("API_KEY")
+```
+
+```javascript
+// Node.js with dotenv
+require('dotenv').config()
+const apiKey = process.env.API_KEY
+```
+
+### GitHub Secrets
+
+For CI/CD, use GitHub secrets:
+
+1. Repository → Settings → Secrets and variables → Actions
+2. "New repository secret"
+3. Use in workflows:
+
+```yaml
+env:
+  API_KEY: ${{ secrets.API_KEY }}
+```
+
+## Automatic Secret Scanning
+
+### Pre-commit Hook
+
+Install a hook that blocks commits containing secrets:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Create .pre-commit-config.yaml
+```
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: detect-private-key
+      - id: detect-aws-credentials
+```
+
+```bash
+# Install hooks
+pre-commit install
+```
+
+### GitHub Action
+
+```yaml
+# .github/workflows/secrets-scan.yml
+name: Secrets Scan
+
+on: [push, pull_request]
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Gitleaks Configuration
+
+```toml
+# .gitleaks.toml
+[allowlist]
+description = "Allowlist for project"
+
+# Ignore certain files
+paths = [
+  '''.gitleaks.toml''',
+  '''tests/fixtures/''',
+]
+
+# Ignore certain patterns
+regexes = [
+  '''EXAMPLE_API_KEY''',
+  '''test-.*-key''',
+]
+```
+
+## If a Secret is Committed
+
+### Remediation Steps
+
+1. **Revoke the secret immediately** on the relevant service
+2. Generate a new secret
+3. Clean up Git history (optional but recommended)
+
+### Cleaning History
+
+::: {.callout-warning}
+## Caution
+
+This operation rewrites history. Coordinate with your team.
+:::
+
+**Option 1: BFG Repo-Cleaner (recommended)**
+
+```bash
+# Install BFG
+brew install bfg  # or download from https://rtyley.github.io/bfg-repo-cleaner/
+
+# Delete file from all history
+bfg --delete-files secrets.json
+
+# Delete sensitive strings
+echo "my-api-key-value" > passwords.txt
+bfg --replace-text passwords.txt
+
+# Clean up
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+
+# Force push (dangerous on shared branches)
+git push --force
+```
+
+**Option 2: git filter-branch**
+
+```bash
+git filter-branch --force --index-filter \
+  'git rm --cached --ignore-unmatch path/to/secret-file' \
+  --prune-empty --tag-name-filter cat -- --all
+
+git push --force --all
+```
+
+## Dependency Security
+
+### Regular Audit
+
+```bash
+# Node.js
+npm audit
+npm audit fix
+
+# Python
+pip-audit
+safety check
+
+# Ruby
+bundle audit
+```
+
+### Dependabot
+
+Enable Dependabot on GitHub:
+
+```yaml
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+### Lockfiles
+
+Always commit your lockfiles:
+
+```gitignore
+# DO NOT ignore
+# package-lock.json
+# yarn.lock
+# poetry.lock
+# Pipfile.lock
+```
+
+## Secure Code Patterns
+
+### Input Validation
+
+```python
+# ❌ AI might generate
+def get_user(user_id):
+    return db.query(f"SELECT * FROM users WHERE id = {user_id}")
+
+# ✅ Ask for instead
+def get_user(user_id: int):
+    # Type validation
+    if not isinstance(user_id, int):
+        raise ValueError("user_id must be an integer")
+    return db.query("SELECT * FROM users WHERE id = ?", (user_id,))
+```
+
+### Output Escaping
+
+```python
+# ❌ Potential XSS
+html = f"<div>Welcome, {username}</div>"
+
+# ✅ With escaping
+from html import escape
+html = f"<div>Welcome, {escape(username)}</div>"
+```
+
+### Error Handling
+
+```python
+# ❌ Exposes sensitive details
+except Exception as e:
+    return {"error": str(e), "stack": traceback.format_exc()}
+
+# ✅ Generic error for user
+except Exception as e:
+    logger.error(f"Error: {e}", exc_info=True)  # Detailed log
+    return {"error": "An internal error occurred"}  # Generic response
+```
+
+## Secure Prompts for Agents
+
+When asking agents for code, be explicit about security:
+
+```
+"Generate an authentication function.
+Security requirements:
+- Password hashing with bcrypt
+- Protection against timing attacks
+- No hardcoded secrets
+- Input validation
+- Generic error messages (don't reveal if email exists)"
+```
+
+### Prompt Checklist
+
+- [ ] Specify security context (production/dev)
+- [ ] Mention applicable regulations (GDPR, HIPAA, etc.)
+- [ ] Explicitly request secrets handling via env vars
+- [ ] Specify necessary input validations
+- [ ] Indicate appropriate logging level
+
+## Security Review of AI Code
+
+### Review Checklist
+
+Before committing AI-generated code:
+
+- [ ] **Secrets**: No hardcoded keys/passwords
+- [ ] **Injection**: Parameterized SQL queries, no eval()
+- [ ] **XSS**: HTML output escaping
+- [ ] **Auth**: Authorization checks present
+- [ ] **Validation**: User inputs validated
+- [ ] **Logging**: No sensitive data in logs
+- [ ] **Dependencies**: Legitimate and up-to-date packages
+- [ ] **Crypto**: No "homemade" crypto, use standards
+
+### Static Analysis Tools
+
+```yaml
+# .github/workflows/security.yml
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Semgrep - multi-language analysis
+      - uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+
+      # For Python
+      - run: pip install bandit && bandit -r src/
+
+      # For JavaScript
+      - run: npx eslint --plugin security src/
+```
+
+## Permissions and Access
+
+### Principle of Least Privilege
+
+For GitHub Actions:
+
+```yaml
+permissions:
+  contents: read      # Read-only by default
+  pull-requests: write # Only if necessary
+
+jobs:
+  build:
+    permissions:
+      contents: read  # Job-level override
+```
+
+### Limited-Scope Tokens
+
+```bash
+# ❌ Token with all permissions
+GITHUB_TOKEN with repo, admin:org, etc.
+
+# ✅ Minimal token
+GITHUB_TOKEN with only:
+- repo:status
+- public_repo
+```
+
+## In Case of Incident
+
+1. **Contain**: Revoke compromised access
+2. **Assess**: What's the impact?
+3. **Remediate**: Fix the vulnerability
+4. **Communicate**: Inform affected parties
+5. **Learn**: Post-mortem and improvements
+
+---
+
+Next chapter: [Code Review](11-code-review.qmd).

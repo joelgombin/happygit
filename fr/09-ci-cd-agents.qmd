@@ -1,5 +1,6 @@
 ---
 title: "CI/CD et Agents"
+sidebar: fr
 ---
 
 # Intégrer CI/CD avec le développement assisté par IA
@@ -492,5 +493,6 @@ Créez un badge dans votre README :
 ```
 
 ---
+sidebar: fr
 
 Prochain chapitre : [Sécurité](10-securite.qmd).

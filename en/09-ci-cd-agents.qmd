@@ -1,0 +1,497 @@
+---
+title: "CI/CD and Agents"
+sidebar: en
+---
+
+# Integrating CI/CD with AI-Assisted Development
+
+This chapter explores how to combine the power of coding agents with CI/CD automation to create a robust workflow.
+
+## CI as a Safety Net
+
+When you vibe code, CI/CD becomes your guardrail:
+
+```
+You → Agent → Generated code → Push → CI verifies
+                                      │
+                              ┌───────┴───────┐
+                              │               │
+                           ✅ Pass         ❌ Fail
+                              │               │
+                           Merge          Fix & retry
+```
+
+### Why It's Crucial
+
+1. **Agents can introduce subtle bugs** that you don't catch during review
+2. **Automated tests** verify what the human eye might miss
+3. **Consistency** is guaranteed even when you "Accept All"
+4. **Documentation**: CI workflows document your standards
+
+## Recommended Architecture
+
+### Standard Pipeline for Vibe Coders
+
+```yaml
+# .github/workflows/ci.yml
+name: Vibe Coder CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # Stage 1: Quick checks
+  quick-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Format check
+        run: npm run format:check
+
+  # Stage 2: Tests
+  test:
+    needs: quick-checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm test -- --coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # Stage 3: Build
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: dist/
+
+  # Stage 4: Deploy (if main)
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: dist/
+
+      - name: Deploy
+        run: echo "Deploying..."
+```
+
+## Specialized Workflows for AI
+
+### Large Change Detection
+
+Alert when an agent has made massive modifications:
+
+```yaml
+# .github/workflows/large-diff-alert.yml
+name: Large Diff Alert
+
+on:
+  pull_request:
+
+jobs:
+  check-diff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate diff size
+        id: diff
+        run: |
+          STATS=$(git diff --shortstat origin/${{ github.base_ref }}...HEAD)
+          INSERTIONS=$(echo "$STATS" | grep -oP '\d+(?= insertion)' || echo 0)
+          DELETIONS=$(echo "$STATS" | grep -oP '\d+(?= deletion)' || echo 0)
+          TOTAL=$((INSERTIONS + DELETIONS))
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "insertions=$INSERTIONS" >> $GITHUB_OUTPUT
+          echo "deletions=$DELETIONS" >> $GITHUB_OUTPUT
+
+      - name: Comment on large diffs
+        if: steps.diff.outputs.total > 500
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `⚠️ **Large diff detected**
+
+              This PR contains significant changes:
+              - ➕ ${{ steps.diff.outputs.insertions }} insertions
+              - ➖ ${{ steps.diff.outputs.deletions }} deletions
+              - 📊 Total: ${{ steps.diff.outputs.total }} lines changed
+
+              Please review carefully, especially if this code was AI-generated.`
+            });
+```
+
+### New Dependencies Check
+
+```yaml
+# .github/workflows/new-deps.yml
+name: New Dependencies Check
+
+on:
+  pull_request:
+
+jobs:
+  check-deps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for new dependencies
+        id: deps
+        run: |
+          # Compare package.json
+          if git diff origin/${{ github.base_ref }}...HEAD -- package.json | grep -q '"dependencies"\|"devDependencies"'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+
+            # Extract new packages
+            NEW_DEPS=$(git diff origin/${{ github.base_ref }}...HEAD -- package.json | grep "^\+" | grep -oP '"\w[\w-]*":' | tr -d '":' | sort -u)
+            echo "new_deps<<EOF" >> $GITHUB_OUTPUT
+            echo "$NEW_DEPS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Audit new dependencies
+        if: steps.deps.outputs.changed == 'true'
+        run: npm audit
+
+      - name: Comment about new deps
+        if: steps.deps.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `📦 **New dependencies detected**
+
+              The following packages have been added or modified:
+              \`\`\`
+              ${{ steps.deps.outputs.new_deps }}
+              \`\`\`
+
+              Please verify these are legitimate and necessary.`
+            });
+```
+
+### Sensitive Code Scan
+
+```yaml
+# .github/workflows/security-scan.yml
+name: Security Scan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  secrets-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+```
+
+## Integration with Agents
+
+### Label-Triggered Workflow
+
+Allows triggering actions via labels on issues/PRs:
+
+```yaml
+# .github/workflows/ai-review.yml
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  ai-review:
+    if: github.event.label.name == 'ai-review'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get diff
+        id: diff
+        run: |
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
+          echo "diff<<EOF" >> $GITHUB_OUTPUT
+          echo "$DIFF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: AI Review
+        uses: actions/github-script@v7
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        with:
+          script: |
+            const { execSync } = require('child_process');
+
+            // Call to Claude API (simplified example)
+            const review = execSync(`
+              curl -s https://api.anthropic.com/v1/messages \
+                -H "x-api-key: $ANTHROPIC_API_KEY" \
+                -H "content-type: application/json" \
+                -d '{
+                  "model": "claude-3-sonnet-20240229",
+                  "max_tokens": 1024,
+                  "messages": [{
+                    "role": "user",
+                    "content": "Review this code diff and provide constructive feedback:\\n${{ steps.diff.outputs.diff }}"
+                  }]
+                }'
+            `).toString();
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## AI Code Review\\n\\n${review}`
+            });
+```
+
+### Auto-Generated Documentation
+
+```yaml
+# .github/workflows/auto-docs.yml
+name: Auto Documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pdoc llm llm-claude-3
+
+      - name: Generate API docs
+        run: pdoc --html src/ -o docs/api/
+
+      - name: Generate README sections
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # Generate "Features" section based on code
+          llm -m claude-3-haiku "Based on the code in src/, list the main features of this project in markdown bullet points" > docs/features.md
+
+      - name: Commit docs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/
+          git diff --staged --quiet || git commit -m "docs: auto-update documentation [skip ci]"
+          git push
+```
+
+## CI/CD Best Practices for Vibe Coding
+
+### 1. Fail Fast
+
+Put quick checks first:
+
+```yaml
+jobs:
+  lint:
+    # 30 seconds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm run lint
+
+  test:
+    needs: lint  # Only runs if lint passes
+    # 5 minutes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
+
+  e2e:
+    needs: test  # Only runs if test passes
+    # 15 minutes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm run e2e
+```
+
+### 2. Parallelization
+
+```yaml
+jobs:
+  lint: ...
+  typecheck: ...
+  test-unit: ...
+
+  # These jobs run in parallel
+
+  build:
+    needs: [lint, typecheck, test-unit]
+    # Only runs after all 3
+```
+
+### 3. Aggressive Caching
+
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: |
+      ~/.npm
+      node_modules
+      ~/.cache/Cypress
+    key: ${{ runner.os }}-deps-${{ hashFiles('**/package-lock.json') }}
+```
+
+### 4. Notifications
+
+```yaml
+- name: Notify on failure
+  if: failure()
+  uses: 8398a7/action-slack@v3
+  with:
+    status: failure
+    channel: '#ci-alerts'
+  env:
+    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+```
+
+## Metrics and Observability
+
+### Coverage Tracking
+
+```yaml
+- name: Tests with coverage
+  run: npm test -- --coverage
+
+- name: Upload to Codecov
+  uses: codecov/codecov-action@v4
+  with:
+    fail_ci_if_error: true
+```
+
+### Build Timing
+
+```yaml
+- name: Build timing
+  run: |
+    START=$(date +%s)
+    npm run build
+    END=$(date +%s)
+    echo "Build took $((END-START)) seconds"
+```
+
+### Health Dashboard
+
+Create a badge in your README:
+
+```markdown
+![CI](https://github.com/user/repo/workflows/CI/badge.svg)
+![Coverage](https://codecov.io/gh/user/repo/branch/main/graph/badge.svg)
+```
+
+---
+
+Next chapter: [Security](10-security.qmd).

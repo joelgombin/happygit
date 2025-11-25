@@ -1,0 +1,231 @@
+---
+title: "Vibe Coding"
+sidebar: en
+---
+
+# Definition and Practices of Vibe Coding
+
+In February 2025, Andrej Karpathy introduced a term that quickly spread through the tech community:
+
+> "There's a new kind of coding I call 'vibe coding', where you fully give in to the vibes, embrace exponentials, and forget that the code even exists."
+
+## What is Vibe Coding?
+
+Vibe coding is programming by relying entirely on LLMs to generate code. You describe what you want, the AI produces the code, and you accept the result without necessarily reading it in detail.
+
+### Karpathy's Original Description
+
+Here's how he describes his own practice:
+
+- "I 'Accept All' always, I don't read the diffs anymore"
+- "When I get error messages I just copy paste them in with no comment, usually that fixes it"
+- "The code grows beyond my usual comprehension"
+- "Sometimes the LLMs can't fix a bug so I just work around it or ask for random changes until it goes away"
+
+::: {.callout-warning}
+## Mind the Context
+
+Karpathy explicitly states this approach is suitable for "throwaway weekend projects"—disposable personal projects. This is not a recommendation for production code.
+:::
+
+## The Spectrum of Practices
+
+Simon Willison brings an important nuance:
+
+> "If an LLM wrote the code for you, and you then reviewed it, tested it thoroughly and made sure you could explain how it works to someone else—that's not vibe coding, it's software development."
+
+### Pure Vibe Coding
+
+- Accept All without reading
+- Copy-paste errors without comment
+- Code becomes a "black box"
+- Goal: make it work, regardless of how
+
+### AI-Assisted Development
+
+- AI generates, human reviews
+- Systematic testing
+- Understanding of generated code
+- AI as collaborator, not sole author
+
+## When to Vibe Code?
+
+### Appropriate Use Cases
+
+**Prototypes and POCs:**
+```
+→ Quickly explore an idea
+→ Validate a concept
+→ Create a demo
+```
+
+**Personal projects:**
+```
+→ One-shot scripts
+→ Home automation
+→ Experiments
+```
+
+**Learning:**
+```
+→ Discover a new language
+→ Understand an API
+→ Explore patterns
+```
+
+### Cases Requiring Caution
+
+**Production:**
+```
+⚠️ Review mandatory
+⚠️ Rigorous testing
+⚠️ Code understanding
+```
+
+**Security:**
+```
+⚠️ Never vibe code
+⚠️ Manual audit
+⚠️ Expertise required
+```
+
+**Critical code:**
+```
+⚠️ Financial transactions
+⚠️ Medical data
+⚠️ Infrastructure
+```
+
+## Expert Practices
+
+### Simon Willison: The Prolific Developer
+
+Simon Willison is recognized for his exceptional productivity using LLMs. His practices:
+
+1. **Rapid iteration**: ask for plans before implementation
+2. **Rich context**: provide lots of context to the AI
+3. **Tests as guardrails**: human-validated tests verify AI code
+4. **Public documentation**: share experiences openly
+
+::: {.callout-tip}
+## The Simon Willison Method
+
+For major changes, first ask the AI for a plan. Iterate on the plan until it's satisfactory. Then request implementation step by step. Sometimes abandon the plan if the change isn't useful.
+:::
+
+### Andrej Karpathy: The Experimenter
+
+Karpathy used vibe coding to create iOS apps without knowing Swift:
+
+1. **Clear objectives**: know what you want to build
+2. **Fast feedback**: test immediately
+3. **Accept limitations**: sometimes work around rather than solve
+4. **Throwaway projects**: don't get attached to the code
+
+## The Vibe Coder's Tools
+
+### Coding Agents
+
+| Tool | Description |
+|------|-------------|
+| **Claude Code** | Anthropic's CLI agent, excellent for complex projects |
+| **Cursor** | IDE with integrated AI, popular for vibe coding |
+| **GitHub Copilot** | Completion and chat in VS Code |
+| **Aider** | Open source command-line agent |
+| **Windsurf** | Cursor alternative by Codeium |
+
+### Interaction Modes
+
+**Conversational chat:**
+```
+"Create a function that validates emails"
+→ AI generates
+→ You evaluate
+```
+
+**Composer/Agent:**
+```
+"Refactor the entire authentication module
+to use OAuth2"
+→ AI plans and executes
+→ You supervise
+```
+
+**Inline/Autocomplete:**
+```
+def calculate_tax(  # AI completes
+```
+
+## Pitfalls to Avoid
+
+### 1. Invisible Technical Debt
+
+Generated code can work while being poorly structured. Without review, debt accumulates silently.
+
+```python
+# AI often generates code that "works" but...
+def process_data(data):
+    # 200 lines of spaghetti code
+    # No error handling
+    # Poorly named variables
+    # But... it works!
+    pass
+```
+
+### 2. Security Vulnerabilities
+
+LLMs sometimes reproduce security anti-patterns seen in their training data.
+
+```python
+# AI can generate this without batting an eye
+query = f"SELECT * FROM users WHERE id = {user_input}"  # SQL Injection!
+```
+
+### 3. Hallucinations
+
+LLMs can invent APIs or functions that don't exist.
+
+```python
+# AI might suggest
+import fictional_library  # Doesn't exist!
+fictional_library.do_magic()
+```
+
+### 4. Loss of Understanding
+
+If you never read the code, you can't maintain or debug it.
+
+## Git as Safety Net
+
+In a vibe coding workflow, Git becomes your best friend:
+
+```bash
+# Before a vibe coding session
+git checkout -b experiment/vibe-auth-refactor
+
+# Frequent commits to be able to roll back
+git add -A && git commit -m "WIP: vibe coding session"
+
+# If everything goes wrong
+git checkout main
+git branch -D experiment/vibe-auth-refactor
+```
+
+::: {.callout-tip}
+## Golden Rule
+
+**Never vibe code on `main`.** Always on a branch. Git lets you experiment without risk.
+:::
+
+## Building Your Own Practice
+
+There's no "right" way to do things. Here are questions to define your approach:
+
+1. **What are the stakes?** Personal project vs production
+2. **What's your expertise?** Can you detect errors?
+3. **What are your guardrails?** Tests, CI, peer review
+4. **What's your risk tolerance?** Acceptable bugs vs critical
+
+---
+
+Now that you understand the landscape, let's get practical: [installation and setup](03-installation.qmd).

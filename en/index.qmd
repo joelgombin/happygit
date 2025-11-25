@@ -1,0 +1,92 @@
+---
+title: "Happy Git for Vibe Coders"
+subtitle: "Mastering Git & GitHub in the Age of AI Agents"
+sidebar: en
+---
+
+# Welcome {.unnumbered}
+
+> "There's a new kind of coding I call 'vibe coding', where you fully give in to the vibes, embrace exponentials, and forget that the code even exists."
+>
+> — **Andrej Karpathy**, February 2025
+
+This guide is for **vibe coders**: developers who use AI agents like Claude Code, GitHub Copilot, Cursor, or other assistants to write code. Whether you're an experienced developer exploring these new tools or a newcomer discovering programming through LLMs, this guide will help you master Git and GitHub in this new paradigm.
+
+[🇫🇷 Lire en français](../fr/index.qmd)
+
+## Why this guide?
+
+Traditional Git guides assume you write every line of code yourself. But the world has changed:
+
+- **The agent writes, you supervise**: Your role evolves toward architecture, review, and direction
+- **Diffs explode**: An agent can generate hundreds of lines in seconds
+- **Traceability becomes crucial**: Who wrote what? Human or AI?
+- **Errors propagate quickly**: An unfortunate "Accept All" can introduce subtle bugs
+
+This guide gives you the tools and practices to navigate this new era confidently.
+
+## What you'll learn
+
+### Understanding the revolution
+- Andrej Karpathy's **Software 3.0** paradigm
+- The difference between *vibe coding* and AI-assisted development
+
+### Mastering Git with agents
+- Configuring Git for agent-assisted work
+- Adapted branching strategies
+- Atomic commits despite large changes
+
+### Smart automation
+- GitHub Actions for CI/CD
+- Asynchronous workflows à la Simon Willison
+- Automated tests as a safety net
+
+### Best practices
+- Reviewing AI-generated code
+- Security and secrets
+- Troubleshooting common situations
+
+## This guide's approach
+
+Like its inspiration [Happy Git with R](https://happygitwithr.com/), this guide is **opinionated**. Rather than presenting all possible options, we give you clear recommendations based on community experience.
+
+::: {.callout-tip}
+## Our philosophy
+
+**"Trust the AI, but verify the output."** — The vibe coder community
+
+We believe AI agents are incredible force multipliers, but human judgment remains essential. Git and GitHub are your safety nets.
+:::
+
+## Prerequisites
+
+- A computer (Windows, macOS, or Linux)
+- An internet connection
+- Curiosity and an open mind
+
+No prior Git experience required. If you can already use a coding agent, you have the basics you need.
+
+## How to use this guide
+
+1. **Read sequentially** if you're just starting out
+2. **Navigate by topic** if you're looking for a specific answer
+3. **Experiment** with the provided examples
+
+::: {.callout-note}
+## Contributions welcome
+
+This guide is open source. If you find errors or have suggestions, feel free to open an issue or pull request on the [GitHub repository](https://github.com/joelgombin/happygit).
+:::
+
+## Inspirations and acknowledgments
+
+This guide is inspired by:
+
+- [Happy Git with R](https://happygitwithr.com/) by Jenny Bryan et al.
+- The writings of [Simon Willison](https://simonwillison.net/) on AI and development
+- [Andrej Karpathy's](https://karpathy.ai/) vision of Software 3.0
+- The growing community of vibe coders
+
+---
+
+Ready to start? Head to [Chapter 1: Software 3.0](01-software-3.qmd).
