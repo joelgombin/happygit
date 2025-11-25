@@ -1,0 +1,352 @@
+---
+title: "Branches and Workflows"
+sidebar: en
+---
+
+# Organizing Your Work with Branches
+
+Branches are essential for vibe coding. They allow you to experiment without risk and keep a clean history.
+
+## Why Branches Are Crucial
+
+Imagine this scenario:
+
+```
+You: "Refactor the entire auth system"
+Agent: *modifies 47 files*
+You: "Hmm, it doesn't work anymore..."
+```
+
+**Without a branch**: panic, frantic `Ctrl+Z`, potential work loss
+
+**With a branch**:
+```bash
+git checkout main  # Return to stable state
+git branch -D experiment/auth-refactor  # Delete failed experiment
+# Start over calmly
+```
+
+## Basic Branch Operations
+
+### Create and Navigate
+
+```bash
+# View branches
+git branch          # Local branches
+git branch -a       # All (including remote)
+
+# Create a branch
+git branch feature/login
+
+# Create and switch to it
+git checkout -b feature/login
+# or (Git 2.23+)
+git switch -c feature/login
+
+# Switch to existing branch
+git checkout main
+# or
+git switch main
+
+# Delete a branch
+git branch -d feature/login      # If merged
+git branch -D feature/login      # Force delete
+```
+
+### Naming Your Branches
+
+Recommended conventions:
+
+```
+feature/   → New features
+fix/       → Bug fixes
+refactor/  → Code restructuring
+experiment/→ Explorations (pure vibe coding)
+docs/      → Documentation
+test/      → Tests
+```
+
+Examples:
+```bash
+git checkout -b feature/user-authentication
+git checkout -b fix/login-validation-error
+git checkout -b experiment/new-ui-framework
+```
+
+## Workflows Adapted to Vibe Coding
+
+### The "Experiment Branch" Workflow
+
+Perfect for exploratory vibe coding:
+
+```
+main
+  │
+  └── experiment/idea-1
+        │
+        ├── It works! → merge into main
+        │
+        └── It fails → delete branch
+```
+
+```bash
+# Start the experiment
+git checkout -b experiment/crazy-refactor
+
+# Vibe coding...
+# [Agent makes changes]
+
+# Verify
+git diff
+npm test
+
+# If it works
+git checkout main
+git merge experiment/crazy-refactor
+git branch -d experiment/crazy-refactor
+
+# If it fails
+git checkout main
+git branch -D experiment/crazy-refactor
+```
+
+### The "Feature Branch" Workflow
+
+For more structured development:
+
+```
+main
+  │
+  ├── feature/auth
+  │     ├── commit: "Add login form"
+  │     ├── commit: "Add validation"
+  │     └── commit: "Add tests"
+  │           │
+  │           └── PR → Code Review → Merge
+  │
+  └── feature/dashboard
+        └── ...
+```
+
+```bash
+# New feature
+git checkout -b feature/auth
+
+# Iterative development with the agent
+# Commit 1
+git add . && git commit -m "feat: add login form UI"
+
+# Commit 2
+git add . && git commit -m "feat: add form validation"
+
+# Commit 3
+git add . && git commit -m "test: add login tests"
+
+# Push and PR
+git push -u origin feature/auth
+gh pr create
+```
+
+### The "Stacked Branches" Workflow
+
+For complex, interdependent changes:
+
+```
+main
+  │
+  └── feature/auth-base
+        │
+        └── feature/auth-oauth
+              │
+              └── feature/auth-2fa
+```
+
+```bash
+# Base
+git checkout -b feature/auth-base
+# [Work with agent]
+git commit -m "feat: basic auth structure"
+
+# OAuth (based on auth-base)
+git checkout -b feature/auth-oauth
+# [More work]
+git commit -m "feat: add OAuth support"
+
+# 2FA (based on OAuth)
+git checkout -b feature/auth-2fa
+# [Even more]
+git commit -m "feat: add 2FA"
+
+# Merge in order
+git checkout main
+git merge feature/auth-base
+git merge feature/auth-oauth
+git merge feature/auth-2fa
+```
+
+## Merge vs Rebase
+
+### Merge: Preserve History
+
+```bash
+git checkout main
+git merge feature/login
+```
+
+Result:
+```
+      A---B---C feature/login
+     /         \
+D---E-----------F main (merge commit)
+```
+
+**Advantages**: complete history, easy to understand
+**Disadvantages**: can get complex with many branches
+
+### Rebase: Linear History
+
+```bash
+git checkout feature/login
+git rebase main
+git checkout main
+git merge feature/login  # Fast-forward
+```
+
+Result:
+```
+D---E---A'---B'---C' main
+```
+
+**Advantages**: clean, linear history
+**Disadvantages**: rewrites history, don't use on shared branches
+
+::: {.callout-warning}
+## Golden Rule of Rebase
+
+**Never rebase commits that have been pushed and shared.** Rebase rewrites history, which causes problems if others have based their work on it.
+:::
+
+## Handling Conflicts
+
+Conflicts happen when Git can't automatically merge:
+
+```
+<<<<<<< HEAD
+const apiUrl = "https://prod.api.com";
+=======
+const apiUrl = "https://staging.api.com";
+>>>>>>> feature/staging
+```
+
+### Resolve Manually
+
+1. Open the conflicting file
+2. Choose the right version (or combine)
+3. Remove the markers `<<<<<<<`, `=======`, `>>>>>>>`
+4. `git add` the resolved file
+5. `git commit`
+
+### Using an Agent to Resolve
+
+Agents are pretty good at resolving conflicts:
+
+```
+"Resolve the conflict in src/config.js.
+Context: we want to use the prod URL."
+```
+
+The agent can see both versions and choose or merge intelligently.
+
+### Visual Tools
+
+```bash
+# Configure a merge tool
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+
+# Launch the tool
+git mergetool
+```
+
+## Strategies for Team Work
+
+### Branch Protection
+
+On GitHub, protect the `main` branch:
+- Settings → Branches → Add rule
+- Require pull request reviews
+- Require status checks (CI)
+- Require linear history (optional)
+
+### Team Conventions
+
+Establish clear rules:
+
+```markdown
+## Branch Conventions
+
+1. `main` is always deployable
+2. All work on feature branches
+3. Naming: `type/short-description`
+4. PR required to merge into main
+5. At least 1 review before merge
+```
+
+### When Multiple People Use Agents
+
+Watch out for conflicts! If multiple people ask their agents to modify the same files:
+
+```bash
+# Always before starting
+git pull origin main
+
+# Update your feature branch regularly
+git checkout feature/my-work
+git rebase main
+# or
+git merge main
+```
+
+## Advanced Tips
+
+### Cherry-pick: Take a Specific Commit
+
+```bash
+# Take commit abc123 and apply it here
+git cherry-pick abc123
+```
+
+Useful when the agent made a good commit on the wrong branch.
+
+### Worktrees: Multiple Branches in Parallel
+
+```bash
+# Create a worktree for another branch
+git worktree add ../project-feature feature/new-ui
+
+# Work on both in parallel
+# ../project/ → main
+# ../project-feature/ → feature/new-ui
+
+# Clean up
+git worktree remove ../project-feature
+```
+
+### Bisect: Find the Commit That Broke Something
+
+```bash
+git bisect start
+git bisect bad          # Current commit is broken
+git bisect good abc123  # This old commit worked
+
+# Git puts you on a middle commit
+# Test, then:
+git bisect good  # or git bisect bad
+
+# Repeat until you find the culprit
+git bisect reset
+```
+
+---
+
+Next chapter: [Agents and Git](07-agents-and-git.qmd).

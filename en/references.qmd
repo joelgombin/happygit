@@ -1,0 +1,138 @@
+---
+title: "References"
+sidebar: en
+---
+
+# References and Resources
+
+## Main Sources
+
+### On Vibe Coding and Software 3.0
+
+- **Andrej Karpathy** - [Original tweet on vibe coding](https://x.com/karpathy/status/1886192184808149383) (February 2025)
+- **Andrej Karpathy** - [Software 3.0](https://karpathy.ai/) - Vision of software development evolution
+- **Simon Willison** - [Not all AI-assisted programming is vibe coding](https://simonwillison.net/2025/Mar/19/vibe-coding/)
+- **Simon Willison** - [How I use LLMs to help me write code](https://simonw.substack.com/p/how-i-use-llms-to-help-me-write-code)
+
+### AI Development Practices
+
+- **Simon Willison** - [AI-assisted programming tag](https://simonwillison.net/tags/ai-assisted-programming/)
+- **Simon Willison** - [Async Code Research](https://simonwillison.net/2025/Nov/6/async-code-research/)
+- **The Pragmatic Engineer** - [AI tools for software engineers (Simon Willison interview)](https://newsletter.pragmaticengineer.com/p/ai-tools-for-software-engineers-simon-willison)
+- **The Pragmatic Engineer** - [Vibe Coding as a software engineer](https://newsletter.pragmaticengineer.com/p/vibe-coding-as-a-software-engineer)
+
+## Technical Documentation
+
+### Git
+
+- [Official Git Documentation](https://git-scm.com/doc)
+- [Pro Git Book](https://git-scm.com/book/en/v2) (free)
+- [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)
+
+### GitHub
+
+- [GitHub Docs](https://docs.github.com)
+- [GitHub Actions Documentation](https://docs.github.com/actions)
+- [GitHub CLI Manual](https://cli.github.com/manual/)
+
+### Security
+
+- [OWASP Top Ten](https://owasp.org/www-project-top-ten/)
+- [GitHub Security Best Practices](https://docs.github.com/en/code-security)
+- [Gitleaks](https://github.com/gitleaks/gitleaks)
+
+## Recommended Tools
+
+### Coding Agents
+
+| Tool | Description | Link |
+|------|-------------|------|
+| Claude Code | Anthropic's CLI agent | [claude.ai/code](https://claude.ai/code) |
+| Cursor | IDE with integrated AI | [cursor.com](https://cursor.com) |
+| GitHub Copilot | AI assistant in VS Code | [github.com/features/copilot](https://github.com/features/copilot) |
+| Aider | Open source CLI agent | [aider.chat](https://aider.chat) |
+| Windsurf | Cursor alternative | [codeium.com/windsurf](https://codeium.com/windsurf) |
+
+### Git Tools
+
+| Tool | Description | Link |
+|------|-------------|------|
+| GitHub CLI | Official GitHub CLI | [cli.github.com](https://cli.github.com) |
+| GitLens | VS Code extension | [gitlens.amod.io](https://gitlens.amod.io) |
+| Lazygit | TUI for Git | [github.com/jesseduffield/lazygit](https://github.com/jesseduffield/lazygit) |
+| BFG Repo-Cleaner | History cleaning | [rtyley.github.io/bfg-repo-cleaner](https://rtyley.github.io/bfg-repo-cleaner/) |
+
+### CI/CD
+
+| Tool | Description | Link |
+|------|-------------|------|
+| GitHub Actions | CI/CD integrated with GitHub | [docs.github.com/actions](https://docs.github.com/actions) |
+| act | Run Actions locally | [github.com/nektos/act](https://github.com/nektos/act) |
+| Danger | Review automation | [danger.systems](https://danger.systems) |
+
+### Security
+
+| Tool | Description | Link |
+|------|-------------|------|
+| Gitleaks | Secrets scanning | [github.com/gitleaks/gitleaks](https://github.com/gitleaks/gitleaks) |
+| TruffleHog | Credential detection | [github.com/trufflesecurity/trufflehog](https://github.com/trufflesecurity/trufflehog) |
+| Semgrep | Static analysis | [semgrep.dev](https://semgrep.dev) |
+| Dependabot | Dependency updates | [docs.github.com/dependabot](https://docs.github.com/en/code-security/dependabot) |
+
+## Inspirations
+
+### Happy Git with R
+
+This guide is heavily inspired by [Happy Git with R](https://happygitwithr.com/) by Jennifer Bryan, Jim Hester, and other contributors. Their "opinionated" and accessible pedagogical approach guided the structure and tone of this guide.
+
+### Simon Willison Workflows
+
+The automation patterns presented are inspired by Simon Willison's work, notably:
+- [Research repository](https://github.com/simonw/research)
+- [LLM CLI tool](https://github.com/simonw/llm)
+- [Cogapp for dynamic READMEs](https://github.com/simonw/research/blob/main/.github/workflows/update-readme.yml)
+
+## Further Reading
+
+### Blog Posts
+
+- [The future of programming](https://karpathy.medium.com/) - Andrej Karpathy
+- [Working with AI](https://simonwillison.net/2024/Dec/28/working-with-ai/) - Simon Willison
+- [The death of the junior developer?](https://newsletter.pragmaticengineer.com/) - The Pragmatic Engineer
+
+### Podcasts
+
+- [The Pragmatic Engineer Podcast](https://newsletter.pragmaticengineer.com/podcast)
+- [Latent Space](https://www.latent.space/podcast)
+
+### Videos
+
+- Andrej Karpathy's talks on YouTube
+- GitHub Universe sessions
+
+## Contributing to This Guide
+
+This guide is open source! To contribute:
+
+1. Fork the [repository](https://github.com/joelgombin/happygit)
+2. Create a branch for your changes
+3. Submit a pull request
+
+Types of welcome contributions:
+- Typo and error fixes
+- New examples
+- Translations
+- Clarity improvements
+- New chapters on related topics
+
+## License
+
+This guide is published under [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
+
+You are free to:
+- **Share** — copy and redistribute the material
+- **Adapt** — remix, transform, and build upon the material
+
+Under the following terms:
+- **Attribution** — You must give appropriate credit
+- **NonCommercial** — No commercial use

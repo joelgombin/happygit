@@ -1,0 +1,281 @@
+---
+title: "Installation"
+sidebar: en
+---
+
+# Installing Git and Essential Tools
+
+Before vibe coding effectively, you need a properly configured environment. This chapter guides you step by step.
+
+## Installing Git
+
+### Windows
+
+**Recommended: Git for Windows**
+
+1. Download [Git for Windows](https://gitforwindows.org/)
+2. Run the installer
+3. Accept the default options (they're good)
+4. At "Adjusting your PATH", choose "Git from the command line and also from 3rd-party software"
+
+**Verification:**
+```bash
+git --version
+# git version 2.43.0.windows.1
+```
+
+::: {.callout-tip}
+## Windows Terminal
+
+Install [Windows Terminal](https://aka.ms/terminal) from the Microsoft Store for a better command-line experience.
+:::
+
+### macOS
+
+**Option 1: Xcode Command Line Tools (simplest)**
+
+```bash
+xcode-select --install
+```
+
+**Option 2: Homebrew (recommended for developers)**
+
+```bash
+# Install Homebrew if not already done
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Git
+brew install git
+```
+
+**Verification:**
+```bash
+git --version
+# git version 2.43.0
+```
+
+### Linux
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install git
+```
+
+**Fedora:**
+```bash
+sudo dnf install git
+```
+
+**Arch:**
+```bash
+sudo pacman -S git
+```
+
+## Configuring Git
+
+Minimum required configuration:
+
+```bash
+# Your identity
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# Default editor (VS Code recommended)
+git config --global core.editor "code --wait"
+
+# Default branch
+git config --global init.defaultBranch main
+
+# Colors in terminal
+git config --global color.ui auto
+```
+
+### Recommended Configuration for Vibe Coding
+
+```bash
+# Pull with rebase by default (avoids merge commits)
+git config --global pull.rebase true
+
+# Push only current branch
+git config --global push.default current
+
+# Better diff for moved files
+git config --global diff.renames true
+
+# Useful aliases
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.cm "commit -m"
+git config --global alias.last "log -1 HEAD"
+git config --global alias.visual "log --oneline --graph --all"
+```
+
+## Creating a GitHub Account
+
+1. Go to [github.com](https://github.com)
+2. Click "Sign up"
+3. Follow the creation steps
+4. Enable two-factor authentication (2FA) — **strongly recommended**
+
+::: {.callout-important}
+## Account Security
+
+Your GitHub account will contain potentially sensitive code. Enable 2FA and use a strong, unique password.
+:::
+
+## Installing a Coding Agent
+
+### Claude Code (recommended)
+
+Claude Code is Anthropic's official CLI agent:
+
+```bash
+# Installation via npm
+npm install -g @anthropic-ai/claude-code
+
+# Or via Homebrew (macOS)
+brew install claude-code
+
+# Configuration
+claude-code auth
+```
+
+### Cursor
+
+1. Download from [cursor.com](https://cursor.com)
+2. Install the application
+3. Sign in with your account
+
+### GitHub Copilot
+
+1. Subscribe to GitHub Copilot
+2. Install the VS Code extension "GitHub Copilot"
+3. Sign in to your GitHub account
+
+### Aider
+
+Open source terminal agent:
+
+```bash
+# Via pip
+pip install aider-chat
+
+# Configuration
+aider --help
+```
+
+## Verifying Your Installation
+
+Create a verification script:
+
+```bash
+#!/bin/bash
+echo "=== Environment Check ==="
+
+echo -n "Git: "
+git --version 2>/dev/null || echo "NOT INSTALLED"
+
+echo -n "Git user.name: "
+git config user.name 2>/dev/null || echo "NOT CONFIGURED"
+
+echo -n "Git user.email: "
+git config user.email 2>/dev/null || echo "NOT CONFIGURED"
+
+echo -n "GitHub CLI: "
+gh --version 2>/dev/null | head -1 || echo "NOT INSTALLED (optional)"
+
+echo "=== Check Complete ==="
+```
+
+## Recommended Work Structure
+
+Organize your projects consistently:
+
+```
+~/code/                    # or ~/projects/
+├── work/                  # Professional projects
+│   ├── project-a/
+│   └── project-b/
+├── personal/              # Personal projects
+│   ├── side-project/
+│   └── experiments/
+└── learning/              # Learning and tutorials
+    ├── tutorials/
+    └── sandbox/
+```
+
+```bash
+# Create this structure
+mkdir -p ~/code/{work,personal,learning}
+```
+
+::: {.callout-tip}
+## Why This Organization?
+
+- **Clear separation** between contexts (work/personal)
+- **Easy to navigate** in the terminal
+- **Simple backup**: you know where everything is
+- **AI agents**: you can give them context ("this is a work project")
+:::
+
+## Global .gitignore File
+
+Create a global `.gitignore` file to ignore common files:
+
+```bash
+# Create the file
+touch ~/.gitignore_global
+
+# Configure it as global gitignore
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+Recommended content for `~/.gitignore_global`:
+
+```gitignore
+# System files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-*
+
+# Python environments
+__pycache__/
+*.py[cod]
+.env
+.venv/
+venv/
+
+# Node
+node_modules/
+npm-debug.log
+
+# Generic build files
+*.log
+*.tmp
+*.temp
+
+# Secrets (never commit!)
+*.pem
+*.key
+.env.local
+.env.*.local
+secrets.json
+```
+
+## Next Steps
+
+Your environment is ready! In the next chapter, we configure authentication with GitHub.
+
+---
+
+→ [GitHub Setup](04-github-setup.qmd)

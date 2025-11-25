@@ -1,0 +1,92 @@
+---
+title: "Happy Git for Vibe Coders"
+subtitle: "Maîtriser Git & GitHub à l'ère des agents IA"
+sidebar: fr
+---
+
+# Bienvenue {.unnumbered}
+
+> "There's a new kind of coding I call 'vibe coding', where you fully give in to the vibes, embrace exponentials, and forget that the code even exists."
+>
+> — **Andrej Karpathy**, février 2025
+
+[🇬🇧 Read in English](../en/index.qmd)
+
+Ce guide est destiné aux **vibe coders** : développeurs qui utilisent des agents IA comme Claude Code, GitHub Copilot, Cursor, ou d'autres assistants pour écrire du code. Que vous soyez un développeur expérimenté explorant ces nouveaux outils ou un novice qui découvre la programmation grâce aux LLMs, ce guide vous aidera à maîtriser Git et GitHub dans ce nouveau paradigme.
+
+## Pourquoi ce guide ?
+
+Les guides Git traditionnels supposent que vous écrivez chaque ligne de code vous-même. Mais le monde a changé :
+
+- **L'agent écrit, vous supervisez** : Votre rôle évolue vers l'architecture, la revue et la direction
+- **Les diffs explosent** : Un agent peut générer des centaines de lignes en quelques secondes
+- **La traçabilité devient cruciale** : Qui a écrit quoi ? L'humain ou l'IA ?
+- **Les erreurs se propagent vite** : Un "Accept All" malheureux peut introduire des bugs subtils
+
+Ce guide vous donne les outils et pratiques pour naviguer sereinement dans cette nouvelle ère.
+
+## Ce que vous allez apprendre
+
+### Comprendre la révolution
+- Le paradigme **Software 3.0** d'Andrej Karpathy
+- La différence entre *vibe coding* et développement assisté par IA
+
+### Maîtriser Git avec des agents
+- Configurer Git pour le travail avec des agents
+- Stratégies de branches adaptées
+- Commits atomiques malgré les gros changements
+
+### Automatiser intelligemment
+- GitHub Actions pour la CI/CD
+- Workflows asynchrones à la Simon Willison
+- Tests automatisés comme filet de sécurité
+
+### Bonnes pratiques
+- Revue de code IA-généré
+- Sécurité et secrets
+- Troubleshooting des situations courantes
+
+## L'approche de ce guide
+
+Comme son inspiration [Happy Git with R](https://happygitwithr.com/), ce guide est **opinionated** (assumé). Plutôt que de vous présenter toutes les options possibles, nous vous donnons des recommandations claires basées sur l'expérience de la communauté.
+
+::: {.callout-tip}
+## Notre philosophie
+
+**"Trust the AI, but verify the output."** — La communauté des vibe coders
+
+Nous croyons que les agents IA sont des multiplicateurs de force incroyables, mais que le jugement humain reste essentiel. Git et GitHub sont vos filets de sécurité.
+:::
+
+## Prérequis
+
+- Un ordinateur (Windows, macOS, ou Linux)
+- Une connexion internet
+- De la curiosité et de l'ouverture d'esprit
+
+Aucune expérience préalable de Git n'est requise. Si vous savez déjà utiliser un agent de code, vous avez les bases nécessaires.
+
+## Comment utiliser ce guide
+
+1. **Lisez séquentiellement** si vous débutez
+2. **Naviguez par thème** si vous cherchez une réponse spécifique
+3. **Expérimentez** avec les exemples fournis
+
+::: {.callout-note}
+## Contributions bienvenues
+
+Ce guide est open source. Si vous trouvez des erreurs ou avez des suggestions, n'hésitez pas à ouvrir une issue ou une pull request sur le [dépôt GitHub](https://github.com/joelgombin/happygit).
+:::
+
+## Inspirations et remerciements
+
+Ce guide s'inspire de :
+
+- [Happy Git with R](https://happygitwithr.com/) par Jenny Bryan et al.
+- Les écrits de [Simon Willison](https://simonwillison.net/) sur l'IA et le développement
+- La vision de [Andrej Karpathy](https://karpathy.ai/) sur le Software 3.0
+- La communauté grandissante des vibe coders
+
+---
+
+Prêt à commencer ? Direction le [chapitre 1 : Software 3.0](01-software-3.qmd).

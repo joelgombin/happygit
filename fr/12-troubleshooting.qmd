@@ -1,5 +1,6 @@
 ---
 title: "Troubleshooting"
+sidebar: fr
 ---
 
 # Résoudre les problèmes courants
@@ -407,6 +408,7 @@ Vérifiez que les tests :
 - Sont maintenables
 
 ---
+sidebar: fr
 
 ## Ressources supplémentaires
 
@@ -427,5 +429,6 @@ Vérifiez que les tests :
 - [Aider](https://aider.chat)
 
 ---
+sidebar: fr
 
 Félicitations ! Vous avez terminé le guide. Bonne vibe coding ! 🎉

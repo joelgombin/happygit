@@ -1,5 +1,6 @@
 ---
 title: "Références"
+sidebar: fr
 ---
 
 # Références et ressources

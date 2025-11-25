@@ -1,47 +1,91 @@
 project:
-  type: book
+  type: website
   output-dir: docs
 
-book:
+website:
   title: "Happy Git for Vibe Coders"
-  subtitle: "Git & GitHub à l'ère des agents IA"
-  author: "La communauté des vibe coders"
-  date: "2025"
-
-  chapters:
-    - index.qmd
-    - part: "Comprendre la révolution"
-      chapters:
-        - 01-software-3.qmd
-        - 02-vibe-coding.qmd
-    - part: "Se préparer"
-      chapters:
-        - 03-installation.qmd
-        - 04-configuration-github.qmd
-    - part: "Git pour vibe coders"
-      chapters:
-        - 05-git-fondamentaux.qmd
-        - 06-branches-workflow.qmd
-        - 07-agents-et-git.qmd
-    - part: "Automatisation"
-      chapters:
-        - 08-github-actions.qmd
-        - 09-ci-cd-agents.qmd
-    - part: "Bonnes pratiques"
-      chapters:
-        - 10-securite.qmd
-        - 11-code-review.qmd
-        - 12-troubleshooting.qmd
-    - references.qmd
-
-  page-navigation: true
-  search: true
   repo-url: https://github.com/joelgombin/happygit
   repo-actions: [edit, issue]
 
+  navbar:
+    background: primary
+    left:
+      - text: "English"
+        href: en/index.qmd
+      - text: "Français"
+        href: fr/index.qmd
+    right:
+      - icon: github
+        href: https://github.com/joelgombin/happygit
+
   sidebar:
-    style: docked
-    background: light
+    - id: en
+      title: "Happy Git for Vibe Coders"
+      style: docked
+      background: light
+      contents:
+        - section: "Home"
+          contents:
+            - en/index.qmd
+        - section: "Understanding the Revolution"
+          contents:
+            - en/01-software-3.qmd
+            - en/02-vibe-coding.qmd
+        - section: "Getting Ready"
+          contents:
+            - en/03-installation.qmd
+            - en/04-github-setup.qmd
+        - section: "Git for Vibe Coders"
+          contents:
+            - en/05-git-basics.qmd
+            - en/06-branches-workflow.qmd
+            - en/07-agents-and-git.qmd
+        - section: "Automation"
+          contents:
+            - en/08-github-actions.qmd
+            - en/09-ci-cd-agents.qmd
+        - section: "Best Practices"
+          contents:
+            - en/10-security.qmd
+            - en/11-code-review.qmd
+            - en/12-troubleshooting.qmd
+        - section: "Resources"
+          contents:
+            - en/references.qmd
+
+    - id: fr
+      title: "Happy Git for Vibe Coders"
+      style: docked
+      background: light
+      contents:
+        - section: "Accueil"
+          contents:
+            - fr/index.qmd
+        - section: "Comprendre la révolution"
+          contents:
+            - fr/01-software-3.qmd
+            - fr/02-vibe-coding.qmd
+        - section: "Se préparer"
+          contents:
+            - fr/03-installation.qmd
+            - fr/04-configuration-github.qmd
+        - section: "Git pour vibe coders"
+          contents:
+            - fr/05-git-fondamentaux.qmd
+            - fr/06-branches-workflow.qmd
+            - fr/07-agents-et-git.qmd
+        - section: "Automatisation"
+          contents:
+            - fr/08-github-actions.qmd
+            - fr/09-ci-cd-agents.qmd
+        - section: "Bonnes pratiques"
+          contents:
+            - fr/10-securite.qmd
+            - fr/11-code-review.qmd
+            - fr/12-troubleshooting.qmd
+        - section: "Ressources"
+          contents:
+            - fr/references.qmd
 
 format:
   html:

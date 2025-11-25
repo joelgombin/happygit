@@ -1,5 +1,6 @@
 ---
 title: "Agents et Git"
+sidebar: fr
 ---
 
 # Travailler efficacement avec les agents de code
@@ -355,5 +356,6 @@ echo "Ready to push!"
 ```
 
 ---
+sidebar: fr
 
 Prochain chapitre : [GitHub Actions](08-github-actions.qmd).

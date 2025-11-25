@@ -1,0 +1,177 @@
+---
+title: "The Software 3.0 Era"
+sidebar: en
+---
+
+# Understanding the Revolution
+
+Andrej Karpathy, co-founder of OpenAI and former AI director at Tesla, identified a fundamental evolution in how we create software. To understand where we are, let's trace the path.
+
+## Software 1.0: Human-Written Code
+
+This is the world we've known since the 1950s. A programmer explicitly writes every instruction:
+
+```python
+def is_cat(image):
+    # Thousands of lines of hand-written rules
+    if has_whiskers(image) and has_pointy_ears(image):
+        return True
+    return False
+```
+
+**Characteristics:**
+
+- Every behavior is explicitly programmed
+- Code is deterministic and predictable
+- Bugs are reproducible
+- Maintenance is difficult but understandable
+
+## Software 2.0: Neural Networks
+
+Around 2017, Karpathy observed the emergence of a new paradigm. Instead of writing rules, we train neural networks:
+
+```python
+def is_cat(image):
+    # The "code" is actually network weights
+    return neural_network.predict(image)
+```
+
+**Characteristics:**
+
+- Behavior emerges from training data
+- Network weights are the actual "code"
+- No one can explain exactly *why* a prediction is made
+- Extremely effective for perception (vision, audio, language)
+
+::: {.callout-note}
+## Software 2.0's "Code"
+
+In Software 2.0, the source code is the model weights—billions of floating-point numbers. The "compiler" is the training process, and the "programming language" is the data.
+:::
+
+## Software 3.0: Programmable LLMs
+
+With the arrival of GPT, Claude, and other LLMs, something fundamental changed:
+
+> "The fundamental change is that neural networks have become programmable with Large Language Models."
+>
+> — Andrej Karpathy
+
+```python
+def is_cat(image):
+    prompt = """
+    Analyze this image and determine if it contains a cat.
+    Respond with 'yes' or 'no'.
+    """
+    return llm.query(prompt, image)
+```
+
+**The paradigm shift:**
+
+- **Prompts are programs** written in natural language
+- **Everyone can program** because everyone speaks a language
+- Behavior can be modified instantly without retraining
+- The human-machine interface becomes a conversation
+
+## LLMs as Operating Systems
+
+Karpathy proposes a powerful analogy: LLMs function like a new kind of operating system:
+
+| OS Concept | LLM Equivalent |
+|------------|----------------|
+| CPU | The model itself |
+| RAM | The context window |
+| Hard drive | External knowledge bases (RAG) |
+| Processes | Agents and workflows |
+| System API | Tools and function calling |
+
+## Implications for Git and Versioning
+
+This revolution has direct consequences for how we manage code:
+
+### 1. Who is the author?
+
+In Software 1.0, it's simple: whoever types the code is the author. But now?
+
+```bash
+# Before
+git commit -m "Refactored user authentication"
+# Clear author: you
+
+# Now
+git commit -m "Refactored user authentication"
+# But Claude Code wrote 90% of the code...
+```
+
+### 2. Velocity explodes
+
+An agent can produce massive changes in seconds:
+
+```bash
+# A "normal" diff in Software 1.0
+ 3 files changed, 45 insertions(+), 12 deletions(-)
+
+# A "vibe coding" diff in Software 3.0
+ 47 files changed, 2,847 insertions(+), 891 deletions(-)
+```
+
+### 3. Code review changes nature
+
+You can no longer read every line. Your role becomes:
+
+- Verify the **overall logic**
+- Ensure **tests pass**
+- Validate the **architecture**
+- Detect obvious **anti-patterns**
+
+## The Assisted Development Spectrum
+
+There's no clear boundary between "real code" and "generated code." It's a spectrum:
+
+```
+100% Human ←──────────────────────→ 100% AI
+    ↓                                    ↓
+Artisanal code            "Accept All" without reading
+    ↓                                    ↓
+Autocompletion              Pure vibe coding
+    ↓                                    ↓
+Inline suggestions           Autonomous agents
+    ↓                                    ↓
+Chat assistance               Complete generation
+```
+
+::: {.callout-important}
+## Where are you on this spectrum?
+
+There's no "right" position. It all depends on context:
+- **Weekend prototype** → Pure vibe coding
+- **Critical production** → Measured assistance + rigorous review
+- **Learning** → Dialogue with AI to understand
+:::
+
+## What This Means for You
+
+### If you're just starting out
+
+Good news: you're learning in the best of times. You can:
+- Ask the agent for explanations
+- Experiment without fear of breaking everything (Git protects you)
+- Learn patterns by seeing generated code
+
+### If you're experienced
+
+Your value evolves:
+- **Less**: typing boilerplate code
+- **More**: architecture, technical decisions, critical review
+- **New**: knowing how to prompt effectively
+
+### In all cases
+
+Git becomes more important than ever as:
+- **Safety net** against AI errors
+- **Logbook** of project evolution
+- **Time machine** to understand context
+
+---
+
+In the next chapter, we explore what *vibe coding* is in more detail and how to practice it responsibly.

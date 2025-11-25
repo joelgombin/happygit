@@ -1,5 +1,6 @@
 ---
 title: "Le Vibe Coding"
+sidebar: fr
 ---
 
 # Définition et pratiques du vibe coding
@@ -226,5 +227,6 @@ Il n'y a pas de "bonne" façon de faire. Voici des questions pour définir votre
 4. **Quelle est votre tolérance au risque ?** Bugs acceptables vs critiques
 
 ---
+sidebar: fr
 
 Maintenant que vous comprenez le paysage, passons à la pratique : [installation et configuration](03-installation.qmd).

@@ -1,5 +1,6 @@
 ---
 title: "Sécurité"
+sidebar: fr
 ---
 
 # Sécurité et Git avec les agents IA
@@ -419,5 +420,6 @@ GITHUB_TOKEN avec seulement:
 5. **Apprenez** : Post-mortem et améliorations
 
 ---
+sidebar: fr
 
 Prochain chapitre : [Code Review](11-code-review.qmd).

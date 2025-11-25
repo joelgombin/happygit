@@ -1,0 +1,432 @@
+---
+title: "Troubleshooting"
+sidebar: en
+---
+
+# Solving Common Problems
+
+This chapter covers frequent problematic situations and how to resolve them.
+
+## Common Git Problems
+
+### "Your branch is behind"
+
+```
+Your branch is behind 'origin/main' by 3 commits
+```
+
+**Solution:**
+```bash
+# Option 1: Merge (preserves history)
+git pull origin main
+
+# Option 2: Rebase (linear history)
+git pull --rebase origin main
+```
+
+### "Your branch has diverged"
+
+```
+Your branch and 'origin/main' have diverged
+```
+
+**Solution:**
+```bash
+# See the situation
+git log --oneline --graph --all
+
+# Option 1: Rebase onto main
+git rebase origin/main
+# Resolve conflicts if needed
+git rebase --continue
+
+# Option 2: Merge
+git merge origin/main
+```
+
+### Merge Conflicts
+
+```
+CONFLICT (content): Merge conflict in file.js
+```
+
+**Solution:**
+```bash
+# See conflicting files
+git status
+
+# Open and resolve manually
+# Look for <<<<<<<, =======, >>>>>>>
+
+# After resolution
+git add file.js
+git commit -m "Resolve merge conflict"
+```
+
+**With an agent:**
+```
+"Resolve the conflict in src/app.js.
+Context: we want to keep both features
+added by each branch."
+```
+
+### "Detached HEAD"
+
+```
+You are in 'detached HEAD' state
+```
+
+**Solution:**
+```bash
+# Return to a branch
+git checkout main
+
+# Or create a branch from current state
+git checkout -b my-new-branch
+```
+
+### Commit on the Wrong Branch
+
+**Move the last commit:**
+```bash
+# Save the commit
+git log -1  # Note the hash
+
+# Undo the commit (keep changes)
+git reset --soft HEAD~1
+
+# Switch branches
+git stash
+git checkout correct-branch
+git stash pop
+
+# Commit on the right branch
+git add .
+git commit -m "Your message"
+```
+
+### Undo a Push
+
+```bash
+# Create a commit that undoes the changes
+git revert HEAD
+
+# Or multiple commits
+git revert HEAD~3..HEAD
+
+# Push the revert
+git push
+```
+
+::: {.callout-warning}
+## Don't Force Push on Shared Branches
+
+Avoid `git push --force` on main or branches where others are working. Use `git revert` instead.
+:::
+
+## Problems with Agents
+
+### The Agent Broke the Project
+
+```bash
+# Quick solution: undo everything
+git checkout .
+git clean -fd  # Deletes untracked files
+
+# Targeted solution: see what changed
+git diff
+# Undo file by file
+git checkout -- file-that-works.js
+
+# Return to a known good state
+git log --oneline
+git checkout abc1234 -- .
+```
+
+### The Agent Created Unwanted Files
+
+```bash
+# See untracked files
+git status
+
+# Delete a specific file
+rm unwanted-file.txt
+
+# Delete all untracked files
+git clean -fd
+
+# Preview before deleting
+git clean -fd --dry-run
+```
+
+### The Agent Modified Files It Shouldn't Have
+
+```bash
+# See modified files
+git diff --name-only
+
+# Restore certain files
+git checkout -- config/production.json
+git checkout -- .env.example
+```
+
+### Incomprehensible Code
+
+Ask for explanations:
+```
+"Explain what this function does line by line:
+[paste code]"
+```
+
+Or ask for a rewrite:
+```
+"Rewrite this function in a simpler,
+more readable way, with explanatory comments."
+```
+
+## Authentication Problems
+
+### "Permission denied (publickey)"
+
+```bash
+# Check that SSH agent is running
+eval "$(ssh-agent -s)"
+
+# List loaded keys
+ssh-add -l
+
+# If empty, add the key
+ssh-add ~/.ssh/id_ed25519
+
+# Test connection
+ssh -T git@github.com
+```
+
+### "Repository not found"
+
+Possible causes:
+1. Incorrect URL
+2. No repo access
+3. Wrong account authenticated
+
+```bash
+# Check the URL
+git remote -v
+
+# Check access
+gh auth status
+
+# Fix URL if needed
+git remote set-url origin git@github.com:user/repo.git
+```
+
+### Expired Token
+
+```bash
+# GitHub CLI
+gh auth refresh
+
+# Or re-login
+gh auth login
+```
+
+## CI/CD Problems
+
+### Tests Pass Locally but Not in CI
+
+**Common causes:**
+
+1. **Environment variables**:
+```bash
+# Check that secrets are configured
+# GitHub → Settings → Secrets
+```
+
+2. **Different versions**:
+```yaml
+# Fix versions in workflow
+- uses: actions/setup-node@v4
+  with:
+    node-version: '20.10.0'  # Exact version
+```
+
+3. **Cache state**:
+```yaml
+# Invalidate cache
+key: ${{ runner.os }}-${{ hashFiles('**/lockfile') }}-v2  # Change v2
+```
+
+4. **OS differences**:
+```yaml
+# Test on same OS
+runs-on: ubuntu-22.04  # Specific version
+```
+
+### Workflow Doesn't Trigger
+
+```yaml
+# Check the trigger
+on:
+  push:
+    branches: [main]  # Is the branch correct?
+    paths:
+      - 'src/**'      # Does the path match?
+```
+
+### Timeout
+
+```yaml
+jobs:
+  build:
+    timeout-minutes: 30  # Increase if needed
+
+    steps:
+      - name: Long step
+        timeout-minutes: 10  # Per-step timeout
+        run: npm test
+```
+
+## Data Recovery
+
+### Accidentally Deleted Files
+
+```bash
+# If not committed
+git checkout -- deleted-file.js
+
+# If in a previous commit
+git log --all --full-history -- path/to/file
+git checkout abc1234 -- path/to/file
+```
+
+### Finding Lost Work
+
+```bash
+# HEAD history
+git reflog
+
+# Example output:
+# abc1234 HEAD@{0}: reset: moving to HEAD~3
+# def5678 HEAD@{1}: commit: My work  ← The "lost" work
+
+# Recover
+git checkout def5678
+# or
+git cherry-pick def5678
+```
+
+### Recovering a Deleted Stash
+
+```bash
+# List all lost objects
+git fsck --lost-found
+
+# Search in objects
+git show <hash>
+
+# Recover
+git stash apply <hash>
+```
+
+## Performance Problems
+
+### Slow Clone
+
+```bash
+# Shallow clone (without full history)
+git clone --depth 1 https://github.com/user/repo.git
+
+# Partial clone (blobs on demand)
+git clone --filter=blob:none https://github.com/user/repo.git
+```
+
+### Slow Git Status
+
+```bash
+# See what's taking time
+GIT_TRACE=1 git status
+
+# Ignore permission changes
+git config core.fileMode false
+
+# On large repos
+git config core.untrackedCache true
+git config core.fsmonitor true
+```
+
+### Repo Became Huge
+
+```bash
+# See largest files
+git rev-list --objects --all | \
+  git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | \
+  awk '/^blob/ {print $3, $4}' | sort -rn | head -20
+
+# Clean up (after removing large files)
+git gc --aggressive --prune=now
+```
+
+## FAQ
+
+### How to Know if Code Was AI-Generated?
+
+There's no foolproof method. Possible indicators:
+- Style slightly different from rest of project
+- More verbose comments or particular style
+- "Correct but generic" patterns
+
+### Should I Mention AI Use in Commits?
+
+It's a team decision. Options:
+- Add `[AI]` or `[ai-assisted]` in message
+- Use a trailer: `AI-assisted: Claude`
+- Don't mention if code was reviewed
+
+### Can AI Resolve My Git Conflicts?
+
+Yes, often effectively:
+```
+"I have a merge conflict in file.js.
+The conflict is:
+[paste conflict]
+Context: we want [explain intent]"
+```
+
+### How to Maintain Code I Don't Understand?
+
+1. **Ask for explanations** from the agent that wrote it
+2. **Add tests** to lock down behavior
+3. **Document** as you understand
+4. **Refactor progressively** toward something clearer
+
+### Can I Trust AI-Generated Tests?
+
+Verify that tests:
+- Actually test what they claim
+- Include edge cases
+- Can fail (test by breaking the code intentionally)
+- Are maintainable
+
+---
+
+## Additional Resources
+
+### Official Documentation
+- [Git Documentation](https://git-scm.com/doc)
+- [GitHub Docs](https://docs.github.com)
+- [GitHub Actions](https://docs.github.com/actions)
+
+### Community
+- [Simon Willison's Blog](https://simonwillison.net/)
+- [Andrej Karpathy](https://karpathy.ai/)
+- [The Pragmatic Engineer](https://newsletter.pragmaticengineer.com/)
+
+### Tools Mentioned
+- [Claude Code](https://claude.ai/code)
+- [Cursor](https://cursor.com)
+- [GitHub Copilot](https://github.com/features/copilot)
+- [Aider](https://aider.chat)
+
+---
+
+Congratulations! You've finished the guide. Happy vibe coding! 🎉
