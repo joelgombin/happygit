@@ -277,6 +277,5 @@ secrets.json
 Votre environnement est prêt ! Dans le prochain chapitre, nous configurons l'authentification avec GitHub.
 
 ---
-sidebar: fr
 
 → [Configuration GitHub](04-configuration-github.qmd)

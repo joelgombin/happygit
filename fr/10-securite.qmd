@@ -420,6 +420,5 @@ GITHUB_TOKEN avec seulement:
 5. **Apprenez** : Post-mortem et améliorations
 
 ---
-sidebar: fr
 
 Prochain chapitre : [Code Review](11-code-review.qmd).

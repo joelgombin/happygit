@@ -348,6 +348,5 @@ git bisect reset
 ```
 
 ---
-sidebar: fr
 
 Prochain chapitre : [Agents et Git](07-agents-et-git.qmd).

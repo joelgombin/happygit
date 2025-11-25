@@ -312,6 +312,5 @@ gh auth refresh
 ```
 
 ---
-sidebar: fr
 
 Votre authentification est configurée ! Passons aux [fondamentaux de Git](05-git-fondamentaux.qmd).

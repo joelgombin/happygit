@@ -493,6 +493,5 @@ Créez un badge dans votre README :
 ```
 
 ---
-sidebar: fr
 
 Prochain chapitre : [Sécurité](10-securite.qmd).

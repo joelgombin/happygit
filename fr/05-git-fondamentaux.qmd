@@ -355,6 +355,5 @@ git checkout -b feature/something
 ```
 
 ---
-sidebar: fr
 
 Prochain chapitre : [Branches et workflows](06-branches-workflow.qmd).
