@@ -14,8 +14,8 @@ website:
     site-name: "Happy Git for Vibe Coders"
 
   twitter-card:
-    creator: "@joelgombin.bsky.social"
-    site: "@happygit4vibecoders.bsky.social"
+    creator: "@joelgombin.fr"
+    site: "@joelgombin.fr"
     card-style: summary_large_image
 
   navbar:
@@ -28,6 +28,8 @@ website:
     right:
       - icon: github
         href: https://github.com/joelgombin/happygit
+      - icon: linkedin
+        href: https://www.linkedin.com/in/jgombin/
 
   sidebar:
     - id: en

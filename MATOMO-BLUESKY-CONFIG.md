@@ -6,33 +6,13 @@ Ce guide explique comment finaliser la configuration de Matomo Analytics et des 
 
 Matomo est une alternative open-source et respectueuse de la vie privée à Google Analytics.
 
-### Étape 1 : Obtenir vos informations Matomo
+### ✅ Configuration actuelle
 
-Si vous avez déjà une instance Matomo :
-1. Connectez-vous à votre tableau de bord Matomo
-2. Notez votre **URL Matomo** (ex: `analytics.example.com` ou `matomo.yoursite.com`)
-3. Notez votre **Site ID** (visible dans Administration > Sites web, généralement 1, 2, 3...)
+Le tracking Matomo est **déjà configuré** dans `matomo-analytics.html` :
+- **URL Matomo** : `matomo.apps.joelgombin.fr`
+- **Site ID** : `2`
 
-Si vous n'avez pas encore Matomo :
-- **Option 1 - Matomo Cloud** : Inscrivez-vous sur https://matomo.org/cloud/
-- **Option 2 - Auto-hébergé** : Installez Matomo sur votre serveur (https://matomo.org/download/)
-
-### Étape 2 : Configurer le tracking
-
-1. Ouvrez le fichier `matomo-analytics.html`
-2. Remplacez `MATOMO_URL` par votre URL Matomo (sans https://)
-   - Exemple : `analytics.example.com` ou `matomo.yoursite.com`
-3. Remplacez `SITE_ID` par votre Site ID
-   - Exemple : `1` ou `2` ou `3`
-
-**Exemple de configuration :**
-```javascript
-var u="//analytics.example.com/";  // ← Votre URL Matomo
-_paq.push(['setTrackerUrl', u+'matomo.php']);
-_paq.push(['setSiteId', '1']);  // ← Votre Site ID
-```
-
-### Étape 3 : Vérifier le fonctionnement
+### Vérifier le fonctionnement
 
 Après avoir déployé le site :
 1. Visitez votre site web
@@ -55,29 +35,28 @@ Bluesky est le réseau social décentralisé où partagent les créateurs et dé
 
 Les Twitter Card metadata fonctionnent aussi sur Bluesky ! Quand quelqu'un partage votre lien sur Bluesky, les métadonnées Open Graph et Twitter Card s'affichent automatiquement.
 
-### Handles actuels configurés
+### ✅ Configuration actuelle
 
-Dans `_quarto.yml`, j'ai configuré :
+Le handle Bluesky est **déjà configuré** dans `_quarto.yml` :
 ```yaml
 twitter-card:
-  creator: "@joelgombin.bsky.social"
-  site: "@happygit4vibecoders.bsky.social"
+  creator: "@joelgombin.fr"
+  site: "@joelgombin.fr"
 ```
 
-### Comment les mettre à jour ?
+**Note** : Le handle personnalisé `@joelgombin.fr` est utilisé (domaine personnalisé Bluesky).
 
-1. **Vérifiez votre handle Bluesky** :
-   - Connectez-vous à Bluesky
-   - Votre handle est visible dans votre profil (ex: `@username.bsky.social`)
+### Profils sociaux configurés
 
-2. **Mettez à jour `_quarto.yml`** si nécessaire :
-   - `creator` : Votre handle personnel
-   - `site` : Le handle du site/projet (si vous en avez créé un)
+Les profils suivants sont intégrés dans les métadonnées SEO et Schema.org :
+- **GitHub** : https://github.com/joelgombin
+- **LinkedIn** : https://www.linkedin.com/in/jgombin/
+- **Bluesky** : https://bsky.app/profile/joelgombin.fr
 
-3. **Handles personnalisés** :
-   - Vous pouvez utiliser un domaine personnalisé comme handle
-   - Ex: `@joelgombin.com` au lieu de `@joelgombin.bsky.social`
-   - Suivez les instructions Bluesky pour configurer un handle personnalisé
+Ces liens apparaissent dans :
+- La navbar du site (GitHub et LinkedIn)
+- Les données structurées Schema.org
+- Les métadonnées pour les moteurs de recherche
 
 ### Test des métadonnées sociales
 
@@ -119,8 +98,13 @@ Une fois le domaine configuré :
 
 ## 📝 Checklist de déploiement
 
-- [ ] Configurer Matomo Analytics dans `matomo-analytics.html`
-- [ ] Vérifier les handles Bluesky dans `_quarto.yml`
+### Configuration complétée ✅
+- [x] Configurer Matomo Analytics dans `matomo-analytics.html` (matomo.apps.joelgombin.fr, Site ID: 2)
+- [x] Vérifier les handles Bluesky dans `_quarto.yml` (@joelgombin.fr)
+- [x] Ajouter les profils sociaux (GitHub, LinkedIn, Bluesky)
+- [x] Créer le fichier CNAME pour le domaine personnalisé
+
+### À faire pour le déploiement
 - [ ] Configurer le DNS pour pointer vers GitHub Pages
 - [ ] Activer le domaine personnalisé dans GitHub Settings
 - [ ] Vérifier que le certificat SSL est actif

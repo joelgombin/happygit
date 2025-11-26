@@ -1,18 +1,16 @@
 <!-- Matomo Analytics -->
-<!-- Replace MATOMO_URL with your Matomo instance URL (e.g., analytics.example.com) -->
-<!-- Replace SITE_ID with your Matomo Site ID (e.g., 1, 2, 3...) -->
 <script>
   var _paq = window._paq = window._paq || [];
   /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
-    var u="//MATOMO_URL/";
+    var u="//matomo.apps.joelgombin.fr/";
     _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', 'SITE_ID']);
+    _paq.push(['setSiteId', '2']);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
     g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
   })();
 </script>
-<noscript><p><img src="//MATOMO_URL/matomo.php?idsite=SITE_ID&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<noscript><p><img src="//matomo.apps.joelgombin.fr/matomo.php?idsite=2&amp;rec=1" style="border:0;" alt="" /></p></noscript>
 <!-- End Matomo Code -->
