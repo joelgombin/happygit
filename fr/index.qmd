@@ -2,6 +2,30 @@
 title: "Happy Git for Vibe Coders"
 subtitle: "Maîtriser Git & GitHub à l'ère des agents IA"
 sidebar: fr
+description: "Maîtrisez Git et GitHub pour le développement assisté par IA. Guide complet pour développeurs utilisant Claude Code, Cursor, GitHub Copilot et autres agents IA. Apprenez le vibe coding et les pratiques Software 3.0."
+keywords:
+  - tutoriel git
+  - guide github
+  - assistant code ia
+  - claude code
+  - cursor ide
+  - github copilot
+  - vibe coding
+  - software 3.0
+  - programmation ia
+  - développement llm
+author: "Joel Gombin"
+lang: fr
+image: "../img/cover.png"
+twitter-card:
+  title: "Happy Git for Vibe Coders - Guide Français"
+  description: "Maîtrisez Git & GitHub avec les agents IA. Tutoriel complet pour utilisateurs de Claude Code, Cursor et GitHub Copilot."
+  image: "../img/cover.png"
+open-graph:
+  title: "Happy Git for Vibe Coders - Guide Français"
+  description: "Maîtrisez Git & GitHub à l'ère des agents IA. Guide pratique pour développeurs utilisant Claude Code, Cursor, GitHub Copilot et autres assistants IA."
+  image: "../img/cover.png"
+  locale: fr_FR
 ---
 
 # Bienvenue {.unnumbered}

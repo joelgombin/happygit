@@ -1,0 +1,33 @@
+# robots.txt for Happy Git for Vibe Coders
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://happygit4vibecoders.com/sitemap.xml
+
+# Disallow indexing of search results if any
+Disallow: /search?
+Disallow: /search.html
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Crawl-delay for good behavior
+Crawl-delay: 1
+
+# Host preference (for Yandex)
+Host: https://happygit4vibecoders.com

@@ -1,6 +1,19 @@
 ---
 title: "Vibe Coding"
+subtitle: "The New Paradigm of AI-Assisted Programming"
 sidebar: en
+description: "Discover vibe coding - Andrej Karpathy's term for AI-driven programming. Learn when to trust AI agents, best practices for LLM-assisted development, and how to balance automation with code review."
+keywords:
+  - vibe coding
+  - ai programming
+  - llm coding
+  - claude code
+  - cursor ide
+  - ai code generation
+  - accept all
+  - ai assisted development
+author: "Joel Gombin"
+lang: en
 ---
 
 # Definition and Practices of Vibe Coding

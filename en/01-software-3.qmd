@@ -1,6 +1,17 @@
 ---
 title: "The Software 3.0 Era"
+subtitle: "Understanding Andrej Karpathy's Vision of AI-Driven Development"
 sidebar: en
+description: "Learn about Software 3.0 - Andrej Karpathy's paradigm for AI-driven development. Understand the evolution from traditional coding to LLM-powered software development and what it means for developers."
+keywords:
+  - software 3.0
+  - andrej karpathy
+  - ai development
+  - llm programming
+  - neural networks
+  - ai-driven coding
+author: "Joel Gombin"
+lang: en
 ---
 
 # Understanding the Revolution
